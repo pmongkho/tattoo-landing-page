@@ -1,0 +1,7 @@
+/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/obj/Debug/net8.0/dotnet-server.csproj.AssemblyReference.cache
+/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/obj/Debug/net8.0/dotnet-server.GeneratedMSBuildEditorConfig.editorconfig
+/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/obj/Debug/net8.0/dotnet-server.AssemblyInfoInputs.cache
+/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/obj/Debug/net8.0/dotnet-server.AssemblyInfo.cs
+/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/obj/Debug/net8.0/dotnet-server.csproj.CoreCompileInputs.cache
+/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/obj/Debug/net8.0/dotnet-server.MvcApplicationPartsAssemblyInfo.cs
+/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/obj/Debug/net8.0/dotnet-server.MvcApplicationPartsAssemblyInfo.cache
