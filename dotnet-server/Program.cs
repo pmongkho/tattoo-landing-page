@@ -1,15 +1,86 @@
+using System.Text;
+using dotnet_server._Data;
+using dotnet_server._Models;
+using dotnet_server._Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-const string CorsPolicy = "AngularDev";
+const string CorsPolicy = "TattooFrontend";
 
-// Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
+builder.Services
+    .AddIdentityCore<ApplicationUser>(options =>
+    {
+        options.User.RequireUniqueEmail = true;
+        options.Password.RequireDigit = true;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequiredLength = 8;
+    })
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddSignInManager();
+
+var jwtKey = builder.Configuration["JWT__Key"] ?? builder.Configuration["JWT:Key"];
+var jwtIssuer = builder.Configuration["JWT__Issuer"] ?? builder.Configuration["JWT:Issuer"] ?? "dotnet-server";
+var jwtAudience = builder.Configuration["JWT__Audience"] ?? builder.Configuration["JWT:Audience"] ?? "tattoo-frontend";
+
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        jwtKey = "dev-only-change-me-very-long-random-string";
+    }
+    else
+    {
+        throw new InvalidOperationException("JWT__Key must be configured in non-development environments.");
+    }
+}
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(CorsPolicy, policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        var allowedOrigins = new List<string> { "http://localhost:4200" };
+        var frontendOrigin = builder.Configuration["FRONTEND_ORIGIN"];
+        if (!string.IsNullOrWhiteSpace(frontendOrigin))
+        {
+            allowedOrigins.Add(frontendOrigin);
+        }
+
+        policy.WithOrigins(allowedOrigins.Distinct().ToArray())
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -17,17 +88,25 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 app.UseCors(CorsPolicy);
+app.UseAuthentication();
+app.UseAuthorization();
 
+app.MapControllers();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
+
+await AdminSeedService.SeedDevelopmentAdminAsync(app.Services, app.Configuration);
 
 app.Run();
-
-

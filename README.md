@@ -1,67 +1,100 @@
-# tattoo-landing-page
+# Tattoo Artist Landing Page (Angular + ASP.NET Core)
 
-## Connect Angular to the .NET API
+## What this project now includes
 
-This repository currently includes the backend API under `dotnet-server`.
+The Angular UI lives in `angular-client/`.
 
-### 1) Start the API
+- Angular frontend with Tailwind landing page, public consultation form, discounted tattoo ideas section, and admin pages.
+- ASP.NET Core Web API with:
+  - ASP.NET Core Identity + EF Core + PostgreSQL.
+  - Admin-only JWT login.
+  - Public consultation submission endpoint.
+  - Public tattoo deals endpoints.
+  - Admin consultations/tattoo-deals management endpoints.
+  - Development-only admin seed flow using environment variables.
+
+## Folder structure (backend)
+
+- `_Controllers`
+- `_Services`
+- `_Models`
+- `_Data`
+- `_Dtos`
+
+## Local development
+
+### 1) Run PostgreSQL
+
+Run PostgreSQL locally (or use Render PostgreSQL for integration testing).
+
+### 2) Backend setup (ASP.NET Core)
+
+From `dotnet-server` (all connection/auth values come from environment variables):
 
 ```bash
-cd dotnet-server
+export ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=tattoo_landing;Username=postgres;Password=postgres"
+export JWT__Key="<long-random-string-min-32-chars>"
+export JWT__Issuer="dotnet-server"
+export JWT__Audience="tattoo-frontend"
+export JWT__AccessTokenMinutes="120"
+export FRONTEND_ORIGIN="http://localhost:4200"
+export ADMIN_EMAIL="admin@example.com"
+export ADMIN_PASSWORD="ChangeMe123!"
+
+dotnet ef database update
 dotnet run
 ```
 
-The default development URLs are configured in `dotnet-server/Properties/launchSettings.json`:
+### 3) Frontend setup (Angular)
 
-- `https://localhost:7132`
-- `http://localhost:5264`
-
-### 2) CORS is enabled for Angular dev server
-
-`Program.cs` defines an `AngularDev` CORS policy that allows requests from:
-
-- `http://localhost:4200`
-
-If your Angular app runs on a different origin, update the origin in `Program.cs`.
-
-### 3) Call the API from Angular
-
-Use this base URL in Angular service code:
-
-- `https://localhost:7132/api`
-
-Example request path:
-
-- `GET https://localhost:7132/api/weatherforecast`
-
-### 4) Optional (recommended): Angular proxy for local development
-
-Create `proxy.conf.json` in your Angular app:
-
-```json
-{
-  "/api": {
-    "target": "https://localhost:7132",
-    "secure": false,
-    "changeOrigin": true
-  }
-}
-```
-
-Start Angular with:
+From `angular-client`:
 
 ```bash
-ng serve --proxy-config proxy.conf.json
+npm install
+npm start
 ```
 
-Then call relative paths from Angular:
+Default dev API base URL is configured in `src/environments/environment.ts`.
 
-- `/api/weatherforecast`
+## Environment variables
 
-### 5) If HTTPS certificate is not trusted
+No connection string is committed to appsettings files.
 
-Run:
+### Backend required (production)
+
+- `ConnectionStrings__DefaultConnection` (Render PostgreSQL connection string)
+- `JWT__Key`
+- `JWT__Issuer`
+- `JWT__Audience`
+- `JWT__AccessTokenMinutes`
+- `FRONTEND_ORIGIN` (Vercel frontend origin)
+
+### Backend optional (development admin seeding only)
+
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD`
+
+> Admin seeding runs in development only and creates/assigns the `Admin` role.
+
+### Frontend (Vercel)
+
+- `API_BASE_URL` for your production backend URL.
+
+## EF migrations
+
+Initial migration files are under `dotnet-server/Migrations`.
+
+Use:
 
 ```bash
-dotnet dev-certs https --trust
+cd dotnet-server
+dotnet ef migrations add <MigrationName>
+dotnet ef database update
 ```
+
+## Security notes
+
+- No real secrets are committed.
+- `appsettings.json` keeps an empty placeholder for `DefaultConnection`.
+- Public registration endpoint is not exposed.
+- Only users already in the `Admin` role can log in successfully.
