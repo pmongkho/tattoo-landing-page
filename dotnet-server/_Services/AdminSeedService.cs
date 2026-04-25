@@ -1,5 +1,7 @@
 using dotnet_server._Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace dotnet_server._Services;
 
@@ -17,6 +19,12 @@ public static class AdminSeedService
 
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<_Data.AppDbContext>();
+
+        if (!await IdentitySchemaExistsAsync(dbContext))
+        {
+            return;
+        }
 
         const string adminRole = "Admin";
         if (!await roleManager.RoleExistsAsync(adminRole))
@@ -54,6 +62,28 @@ public static class AdminSeedService
         if (!await userManager.IsInRoleAsync(existingUser, adminRole))
         {
             await userManager.AddToRoleAsync(existingUser, adminRole);
+        }
+    }
+
+    private static async Task<bool> IdentitySchemaExistsAsync(_Data.AppDbContext dbContext)
+    {
+        try
+        {
+            await using var connection = dbContext.Database.GetDbConnection();
+            if (connection.State != System.Data.ConnectionState.Open)
+            {
+                await connection.OpenAsync();
+            }
+
+            await using var command = connection.CreateCommand();
+            command.CommandText = "SELECT to_regclass('public.\"AspNetRoles\"') IS NOT NULL;";
+            var result = await command.ExecuteScalarAsync();
+
+            return result is true;
+        }
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UndefinedTable)
+        {
+            return false;
         }
     }
 }
