@@ -16,8 +16,10 @@ import { CommonModule } from '@angular/common';
 })
 export class AdminLoginComponent {
   error = false;
-  form = this.fb.group({ email: ['', [Validators.required, Validators.email]], password: ['', [Validators.required]] });
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {}
+  form!: ReturnType<FormBuilder['group']>;
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
+    this.form = this.fb.group({ email: ['', [Validators.required, Validators.email]], password: ['', [Validators.required]] });
+  }
   login(): void {
     if (this.form.invalid) return;
     this.auth.login(this.form.value.email!, this.form.value.password!).subscribe({ next: () => this.router.navigateByUrl('/admin/dashboard'), error: () => this.error = true });

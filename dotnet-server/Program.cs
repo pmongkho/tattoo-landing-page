@@ -107,7 +107,15 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await dbContext.Database.MigrateAsync();
+    var hasMigrations = (await dbContext.Database.GetMigrationsAsync()).Any();
+    if (hasMigrations)
+    {
+        await dbContext.Database.MigrateAsync();
+    }
+    else
+    {
+        await dbContext.Database.EnsureCreatedAsync();
+    }
 }
 
 await AdminSeedService.SeedDevelopmentAdminAsync(app.Services, app.Configuration);
@@ -137,4 +145,3 @@ static string NormalizeConnectionString(string connectionString)
 
     return builder.ConnectionString;
 }
-
