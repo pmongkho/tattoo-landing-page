@@ -18,22 +18,24 @@ export class LandingPageComponent implements OnInit {
 
   days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-  form = this.fb.group({
-    name: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    phoneNumber: ['', [Validators.required]],
-    preferredArtist: ['No preference'],
-    style: ['', [Validators.required]],
-    placement: ['', [Validators.required]],
-    size: ['', [Validators.required]],
-    budget: [''],
-    preferredDays: this.fb.array([]),
-    description: ['', [Validators.required]],
-    agreedToTerms: [false, [Validators.requiredTrue]],
-    tattooDealId: ['']
-  });
+  form!: ReturnType<FormBuilder['group']>;
 
-  constructor(private api: ApiService, private fb: FormBuilder) {}
+  constructor(private api: ApiService, private fb: FormBuilder) {
+    this.form = this.fb.group({
+      name: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['', [Validators.required]],
+      preferredArtist: ['No preference'],
+      style: ['', [Validators.required]],
+      placement: ['', [Validators.required]],
+      size: ['', [Validators.required]],
+      budget: [''],
+      preferredDays: this.fb.array([]),
+      description: ['', [Validators.required]],
+      agreedToTerms: [false, [Validators.requiredTrue]],
+      tattooDealId: ['']
+    });
+  }
 
   get preferredDaysArray(): FormArray { return this.form.controls.preferredDays as FormArray; }
 
