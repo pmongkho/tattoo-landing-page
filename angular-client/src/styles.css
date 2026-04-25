@@ -2,4 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body { @apply text-zinc-100 bg-zinc-950; }
+body {
+  @apply bg-slate-950 text-slate-100 antialiased;
+}
