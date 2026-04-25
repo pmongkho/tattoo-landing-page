@@ -107,7 +107,7 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var hasMigrations = (await dbContext.Database.GetMigrationsAsync()).Any();
+    var hasMigrations = dbContext.Database.GetMigrations().Any();
     if (hasMigrations)
     {
         await dbContext.Database.MigrateAsync();
@@ -139,8 +139,7 @@ static string NormalizeConnectionString(string connectionString)
         Database = uri.AbsolutePath.TrimStart('/'),
         Username = userInfoParts[0],
         Password = userInfoParts.Length > 1 ? userInfoParts[1] : string.Empty,
-        SslMode = SslMode.Require,
-        TrustServerCertificate = true
+        SslMode = SslMode.Require
     };
 
     return builder.ConnectionString;
