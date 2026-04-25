@@ -3,12 +3,12 @@
     <div class="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6">
       <div class="flex items-center justify-between gap-4">
         <div>
-          <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-cyan-300">Enterprise Studio Platform</p>
+          <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-cyan-300">Elite Realism Studio</p>
           <h1 class="text-lg font-semibold leading-tight text-white sm:text-2xl">Black &amp; Grey Realism Tattoo Studio</h1>
         </div>
 
         <a href="#consultation" class="hidden rounded-md border border-cyan-300/50 bg-cyan-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-cyan-200 transition hover:bg-cyan-300/20 sm:inline-flex">
-          Request Consult
+          Book Consult
         </a>
 
         <details class="group sm:hidden">
@@ -21,7 +21,8 @@
             </span>
           </summary>
           <nav class="absolute right-4 mt-2 w-56 rounded-lg border border-slate-700 bg-slate-900/95 p-2 shadow-xl shadow-black/50">
-            <a class="block rounded px-3 py-2 text-sm text-slate-200 hover:bg-slate-800" href="#overview">Overview</a>
+            <a class="block rounded px-3 py-2 text-sm text-slate-200 hover:bg-slate-800" href="#overview">Home</a>
+            <a class="block rounded px-3 py-2 text-sm text-slate-200 hover:bg-slate-800" href="#portfolio">Portfolio</a>
             <a class="block rounded px-3 py-2 text-sm text-slate-200 hover:bg-slate-800" href="#deals">Deals</a>
             <a class="block rounded px-3 py-2 text-sm text-slate-200 hover:bg-slate-800" href="#consultation">Consultation</a>
           </nav>
@@ -29,7 +30,8 @@
       </div>
 
       <nav class="mt-4 hidden items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/60 p-2 sm:flex">
-        <a class="rounded px-3 py-2 text-xs font-medium uppercase tracking-wide text-slate-300 hover:bg-slate-800 hover:text-white" href="#overview">Overview</a>
+        <a class="rounded px-3 py-2 text-xs font-medium uppercase tracking-wide text-slate-300 hover:bg-slate-800 hover:text-white" href="#overview">Home</a>
+        <a class="rounded px-3 py-2 text-xs font-medium uppercase tracking-wide text-slate-300 hover:bg-slate-800 hover:text-white" href="#portfolio">Portfolio</a>
         <a class="rounded px-3 py-2 text-xs font-medium uppercase tracking-wide text-slate-300 hover:bg-slate-800 hover:text-white" href="#deals">Available Deals</a>
         <a class="rounded px-3 py-2 text-xs font-medium uppercase tracking-wide text-slate-300 hover:bg-slate-800 hover:text-white" href="#consultation">Consultation</a>
       </nav>
@@ -37,23 +39,59 @@
   </header>
 
   <main class="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8">
-    <section id="overview" class="scroll-mt-36 rounded-xl border border-slate-800 bg-slate-900/70 p-5 shadow-2xl shadow-black/30 sm:p-8">
-      <p class="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Client Intake</p>
-      <h2 class="mt-2 text-2xl font-semibold text-white sm:text-3xl">Precision tattoo execution, managed like a premium service program.</h2>
-      <p class="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">From concept reviews to appointment scheduling, every step is structured for consistency, speed, and clean communication.</p>
-      <div class="mt-5 grid gap-3 text-xs sm:grid-cols-3 sm:text-sm">
-        <div class="rounded-lg border border-slate-700 bg-slate-950/60 p-3">
-          <p class="font-semibold text-cyan-200">Portfolio Quality</p>
-          <p class="mt-1 text-slate-400">Fresh + healed realism pieces documented per project.</p>
+    <section id="overview" class="scroll-mt-36 overflow-hidden rounded-xl border border-slate-800 bg-slate-900/70 shadow-2xl shadow-black/30">
+      <div class="grid gap-0 lg:grid-cols-2">
+        <div class="p-5 sm:p-8">
+          <p class="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Private Studio Experience</p>
+          <h2 class="mt-2 text-2xl font-semibold text-white sm:text-3xl">Work with an artist who treats your tattoo like a signature project.</h2>
+          <p class="mt-3 text-sm leading-relaxed text-slate-300 sm:text-base">I design custom, high-contrast realism pieces with a focus on composition, clean healing, and long-term visual impact.</p>
+          <ul class="mt-4 space-y-2 text-sm text-slate-300">
+            <li>• Detailed planning call before final drawing.</li>
+            <li>• Professional studio process and aftercare support.</li>
+            <li>• Progress updates from concept to healed result.</li>
+          </ul>
+          <a href="#consultation" class="mt-5 inline-flex rounded-md bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300">Start Your Project</a>
         </div>
-        <div class="rounded-lg border border-slate-700 bg-slate-950/60 p-3">
-          <p class="font-semibold text-cyan-200">Booking Workflow</p>
-          <p class="mt-1 text-slate-400">Submission → concept fit → scheduling confirmation.</p>
+        <div class="relative h-64 w-full sm:h-80 lg:h-full">
+          <video class="h-full w-full object-cover" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=1200&q=80">
+            <source src="https://cdn.coverr.co/videos/coverr-tattoo-machine-closeup-1577/1080p.mp4" type="video/mp4" />
+          </video>
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+          <p class="absolute bottom-3 left-3 rounded bg-black/40 px-2 py-1 text-xs text-slate-200">In-studio process preview</p>
         </div>
-        <div class="rounded-lg border border-slate-700 bg-slate-950/60 p-3">
-          <p class="font-semibold text-cyan-200">Support Window</p>
-          <p class="mt-1 text-slate-400">Fast follow-up for project details and timeline alignment.</p>
+      </div>
+    </section>
+
+    <section id="portfolio" class="scroll-mt-36 rounded-xl border border-slate-800 bg-slate-900/60 p-5 sm:p-6">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div class="flex items-start gap-3">
+          <img class="h-14 w-14 rounded-full border border-slate-700 object-cover" src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=500&q=80" alt="Tattoo artist profile"/>
+          <div>
+            <p class="text-sm font-semibold text-white">tattoo.by.yourname</p>
+            <p class="text-xs text-slate-400">Black &amp; Grey Realism Artist</p>
+            <p class="mt-1 text-xs text-slate-300">Private studio • Custom realism • US travel dates quarterly</p>
+          </div>
         </div>
+        <div class="grid grid-cols-3 gap-2 text-center text-xs">
+          <div class="rounded-md border border-slate-700 px-3 py-2"><p class="font-semibold text-white">460+</p><p class="text-slate-400">Projects</p></div>
+          <div class="rounded-md border border-slate-700 px-3 py-2"><p class="font-semibold text-white">9y</p><p class="text-slate-400">Experience</p></div>
+          <div class="rounded-md border border-slate-700 px-3 py-2"><p class="font-semibold text-white">4.9★</p><p class="text-slate-400">Reviews</p></div>
+        </div>
+      </div>
+
+      <div class="mt-5 inline-flex rounded-lg border border-slate-700 bg-slate-950/70 p-1 text-xs">
+        <button type="button" class="rounded-md px-4 py-2 font-semibold transition" [ngClass]="activePortfolioTab === 'fresh' ? 'bg-cyan-400 text-slate-950' : 'text-slate-300 hover:bg-slate-800'" (click)="setPortfolioTab('fresh')">Fresh</button>
+        <button type="button" class="rounded-md px-4 py-2 font-semibold transition" [ngClass]="activePortfolioTab === 'healed' ? 'bg-cyan-400 text-slate-950' : 'text-slate-300 hover:bg-slate-800'" (click)="setPortfolioTab('healed')">Healed</button>
+      </div>
+
+      <div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
+        <article class="overflow-hidden rounded-md border border-slate-700 bg-slate-950/70" *ngFor="let item of displayedPortfolio">
+          <img class="h-36 w-full object-cover sm:h-44" [src]="item.imageUrl" [alt]="item.title" />
+          <div class="p-2">
+            <p class="text-xs font-semibold text-white">{{ item.title }}</p>
+            <p class="mt-1 text-[11px] text-slate-400">{{ item.caption }}</p>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -80,9 +118,11 @@
 
     <section id="consultation" #consultationSection class="scroll-mt-36 rounded-xl border border-slate-800 bg-slate-900/60 p-5 sm:p-6">
       <h2 class="text-lg font-semibold text-white sm:text-xl">Request a Consultation</h2>
-      <p class="mt-1 text-xs text-slate-400 sm:text-sm">Mobile-first intake form designed for quick completion.</p>
+      <p class="mt-1 text-xs text-slate-400 sm:text-sm">Reference images are required so I can estimate concept fit and session scope quickly.</p>
 
       <form [formGroup]="form" (ngSubmit)="submit()" class="mt-5 grid gap-3 sm:grid-cols-2 sm:gap-4">
+        <input type="hidden" formControlName="style" />
+
         <label class="space-y-1 text-xs font-medium text-slate-300">
           Full Name
           <input class="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none" placeholder="Enter your name" formControlName="name" />
@@ -96,16 +136,6 @@
         <label class="space-y-1 text-xs font-medium text-slate-300">
           Phone Number
           <input class="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none" placeholder="e.g. (555) 123-4567" formControlName="phoneNumber" />
-        </label>
-
-        <label class="space-y-1 text-xs font-medium text-slate-300">
-          Preferred Artist
-          <select class="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-cyan-400 focus:outline-none" formControlName="preferredArtist"><option>No preference</option><option>My artist name placeholder</option></select>
-        </label>
-
-        <label class="space-y-1 text-xs font-medium text-slate-300">
-          Style
-          <input class="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none" placeholder="e.g. Black &amp; Grey realism" formControlName="style" />
         </label>
 
         <label class="space-y-1 text-xs font-medium text-slate-300">
@@ -135,9 +165,10 @@
         </div>
 
         <label class="sm:col-span-2 space-y-1 text-xs font-medium text-slate-300">
-          Reference Images
-          <input type="file" accept="image/*" multiple class="block w-full rounded-md border border-dashed border-slate-600 bg-slate-950 px-3 py-2 text-xs text-slate-300 file:mr-2 file:rounded file:border-0 file:bg-slate-800 file:px-2 file:py-1 file:text-xs file:text-slate-200"/>
+          Reference Images <span class="text-rose-300">*</span>
+          <input type="file" accept="image/*" multiple required class="block w-full rounded-md border border-dashed border-slate-600 bg-slate-950 px-3 py-2 text-xs text-slate-300 file:mr-2 file:rounded file:border-0 file:bg-slate-800 file:px-2 file:py-1 file:text-xs file:text-slate-200" (change)="onReferenceImagesSelected($any($event.target).files)"/>
         </label>
+        <p class="sm:col-span-2 rounded-md border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300" *ngIf="referenceImageError">Please upload at least one reference image before submitting.</p>
 
         <label class="sm:col-span-2 space-y-1 text-xs font-medium text-slate-300">
           Project Description
@@ -150,7 +181,7 @@
         </label>
 
         <div class="sm:col-span-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <button [disabled]="form.invalid" class="w-full rounded-md bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">Submit Consultation</button>
+          <button [disabled]="form.invalid || !hasReferenceImages" class="w-full rounded-md bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">Submit Consultation</button>
           <p class="text-xs text-slate-500">Response time target: within 1 business day.</p>
         </div>
 
