@@ -1,11 +1,5 @@
-using System.Text;
 using dotnet_server._Data;
-using dotnet_server._Models;
-using dotnet_server._Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,54 +14,6 @@ var connectionString = NormalizeConnectionString(rawConnectionString);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services
-    .AddIdentityCore<ApplicationUser>(options =>
-    {
-        options.User.RequireUniqueEmail = true;
-        options.Password.RequireDigit = true;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = true;
-        options.Password.RequireLowercase = true;
-        options.Password.RequiredLength = 8;
-    })
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddSignInManager();
-
-var jwtKey = builder.Configuration["JWT__Key"] ?? builder.Configuration["JWT:Key"];
-var jwtIssuer = builder.Configuration["JWT__Issuer"] ?? builder.Configuration["JWT:Issuer"] ?? "dotnet-server";
-var jwtAudience = builder.Configuration["JWT__Audience"] ?? builder.Configuration["JWT:Audience"] ?? "tattoo-frontend";
-
-if (string.IsNullOrWhiteSpace(jwtKey))
-{
-    if (builder.Environment.IsDevelopment())
-    {
-        jwtKey = "dev-only-change-me-very-long-random-string";
-    }
-    else
-    {
-        throw new InvalidOperationException("JWT__Key must be configured in non-development environments.");
-    }
-}
-
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateIssuerSigningKey = true,
-            ValidateLifetime = true,
-            ValidIssuer = jwtIssuer,
-            ValidAudience = jwtAudience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-        };
-    });
-
-builder.Services.AddAuthorization();
-builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -99,26 +45,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors(CorsPolicy);
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var hasMigrations = dbContext.Database.GetMigrations().Any();
-    if (hasMigrations)
-    {
-        await dbContext.Database.MigrateAsync();
-    }
-    else
-    {
-        await dbContext.Database.EnsureCreatedAsync();
-    }
+    await dbContext.Database.EnsureCreatedAsync();
 }
-
-await AdminSeedService.SeedDevelopmentAdminAsync(app.Services, app.Configuration);
 
 app.Run();
 
