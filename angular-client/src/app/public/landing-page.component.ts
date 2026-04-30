@@ -1,6 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../core/api.service';
 import { TattooDeal } from '../models/models';
 
@@ -19,15 +19,9 @@ type PortfolioItem = {
   templateUrl: './landing-page.component.html'
 })
 export class LandingPageComponent implements OnInit {
-  @ViewChild('consultationSection') consultationSection?: ElementRef<HTMLElement>;
   deals: TattooDeal[] = [];
   loadingDeals = false;
   submitState: 'idle' | 'success' | 'error' = 'idle';
-  referenceImageError = false;
-  hasReferenceImages = false;
-
-  days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
   activePortfolioTab: PortfolioTab = 'fresh';
 
   freshPortfolio: PortfolioItem[] = [
@@ -71,20 +65,18 @@ export class LandingPageComponent implements OnInit {
   constructor(private api: ApiService, private fb: FormBuilder) {
     this.form = this.fb.group({
       name: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['booking@wohu.tattoo', [Validators.required, Validators.email]],
       phoneNumber: ['', [Validators.required]],
       style: ['Black & Grey Realism', [Validators.required]],
-      placement: ['', [Validators.required]],
-      size: ['', [Validators.required]],
+      placement: ['Custom', [Validators.required]],
+      size: ['To discuss', [Validators.required]],
       budget: [''],
-      preferredDays: this.fb.array([]),
-      description: ['', [Validators.required]],
-      agreedToTerms: [false, [Validators.requiredTrue]],
+      description: ['Tattoo consultation request from landing page.', [Validators.required]],
+      timeline: ['', [Validators.required]],
+      agreedToTerms: [true, [Validators.requiredTrue]],
       tattooDealId: ['']
     });
   }
-
-  get preferredDaysArray(): FormArray { return this.form.controls.preferredDays as FormArray; }
 
   get displayedPortfolio(): PortfolioItem[] {
     return this.activePortfolioTab === 'fresh' ? this.freshPortfolio : this.healedPortfolio;
@@ -99,38 +91,24 @@ export class LandingPageComponent implements OnInit {
     this.activePortfolioTab = tab;
   }
 
-  onReferenceImagesSelected(files: FileList | null): void {
-    this.hasReferenceImages = !!files && files.length > 0;
-    this.referenceImageError = false;
-  }
-
-  onDayToggle(day: string, checked: boolean): void {
-    if (checked) { this.preferredDaysArray.push(this.fb.control(day)); return; }
-    const index = this.preferredDaysArray.controls.findIndex((c) => c.value === day);
-    if (index >= 0) this.preferredDaysArray.removeAt(index);
-  }
-
   bookDeal(deal: TattooDeal): void {
     this.form.patchValue({ style: deal.style, placement: deal.placement, size: deal.size, budget: String(deal.discountedPrice), tattooDealId: deal.id });
-    this.consultationSection?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   submit(): void {
-    if (!this.hasReferenceImages) {
-      this.referenceImageError = true;
-      return;
-    }
-
     if (this.form.invalid) return;
 
-    // TODO: send selected reference image files to dedicated storage and persist URLs.
     this.api.submitConsultation(this.form.value).subscribe({
       next: () => {
         this.submitState = 'success';
-        this.form.reset({ style: 'Black & Grey Realism', agreedToTerms: false });
-        this.preferredDaysArray.clear();
-        this.hasReferenceImages = false;
-        this.referenceImageError = false;
+        this.form.reset({
+          style: 'Black & Grey Realism',
+          placement: 'Custom',
+          size: 'To discuss',
+          description: 'Tattoo consultation request from landing page.',
+          timeline: '',
+          agreedToTerms: true
+        });
       },
       error: () => this.submitState = 'error'
     });
