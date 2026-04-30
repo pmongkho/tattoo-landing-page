@@ -26,7 +26,14 @@ builder.Services.AddHttpClient<IQuoLeadMessagingClient, QuoLeadMessagingClient>(
         client.BaseAddress = new Uri(quoOptions.BaseUrl);
     }
 });
-builder.Services.AddScoped<ISquareBookingClient, SquareBookingPlaceholder>();
+builder.Services.AddHttpClient<ISquareBookingClient, SquareBookingPlaceholder>((sp, client) =>
+{
+    var squareOptions = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<SquareApiOptions>>().Value;
+    if (!string.IsNullOrWhiteSpace(squareOptions.BaseUrl))
+    {
+        client.BaseAddress = new Uri(squareOptions.BaseUrl);
+    }
+});
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
