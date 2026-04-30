@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -11,6 +11,7 @@ import { ApiService } from '../core/api.service';
   templateUrl: './phone-form.component.html'
 })
 export class PhoneFormComponent {
+  private readonly fb = inject(FormBuilder);
   submitState: 'idle' | 'success' | 'error' = 'idle';
 
   form = this.fb.group({
@@ -19,7 +20,7 @@ export class PhoneFormComponent {
     smsConsent: [false, [Validators.requiredTrue]]
   });
 
-  constructor(private readonly api: ApiService, private readonly fb: FormBuilder) {}
+  constructor(private readonly api: ApiService) {}
 
   submit(): void {
     if (this.form.invalid) return;
