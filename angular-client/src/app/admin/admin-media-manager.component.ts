@@ -28,25 +28,14 @@ import { MediaSettings, MediaSettingsService, PortfolioItem } from '../core/medi
       </div>
 
       <div class="bg-zinc-900 p-4 rounded space-y-4">
-        <h2 class="text-xl">Fresh Portfolio</h2>
-        <div *ngFor="let item of draft.freshPortfolio; let i = index" class="grid md:grid-cols-3 gap-2 border border-zinc-700 p-3">
+        <h2 class="text-xl">Portfolio Images</h2>
+        <div *ngFor="let item of draft.portfolio; let i = index" class="grid md:grid-cols-3 gap-2 border border-zinc-700 p-3">
           <input [(ngModel)]="item.imageUrl" placeholder="Image URL" class="p-2 bg-black border border-zinc-700" />
           <input [(ngModel)]="item.title" placeholder="Title" class="p-2 bg-black border border-zinc-700" />
           <input [(ngModel)]="item.caption" placeholder="Caption" class="p-2 bg-black border border-zinc-700" />
-          <button (click)="removeItem('fresh', i)" class="underline text-left">Remove</button>
+          <button (click)="removeItem(i)" class="underline text-left">Remove</button>
         </div>
-        <button (click)="addItem('fresh')" class="underline">+ Add fresh item</button>
-      </div>
-
-      <div class="bg-zinc-900 p-4 rounded space-y-4">
-        <h2 class="text-xl">Healed Portfolio</h2>
-        <div *ngFor="let item of draft.healedPortfolio; let i = index" class="grid md:grid-cols-3 gap-2 border border-zinc-700 p-3">
-          <input [(ngModel)]="item.imageUrl" placeholder="Image URL" class="p-2 bg-black border border-zinc-700" />
-          <input [(ngModel)]="item.title" placeholder="Title" class="p-2 bg-black border border-zinc-700" />
-          <input [(ngModel)]="item.caption" placeholder="Caption" class="p-2 bg-black border border-zinc-700" />
-          <button (click)="removeItem('healed', i)" class="underline text-left">Remove</button>
-        </div>
-        <button (click)="addItem('healed')" class="underline">+ Add healed item</button>
+        <button (click)="addItem()" class="underline">+ Add portfolio image</button>
       </div>
 
       <button (click)="save()" class="px-4 py-2 bg-white text-black rounded">Save Settings</button>
@@ -67,8 +56,7 @@ export class AdminMediaManagerComponent {
     this.draft = this.mediaSettings.get() ?? {
       profileImageUrl: '',
       avatarImageUrl: '',
-      freshPortfolio: [],
-      healedPortfolio: []
+      portfolio: []
     };
   }
 
@@ -103,15 +91,13 @@ export class AdminMediaManagerComponent {
     this.uploadMessage = `Upload successful. Blob URL: ${cleanBlobUrl}`;
   }
 
-  addItem(kind: 'fresh' | 'healed'): void {
+  addItem(): void {
     const newItem: PortfolioItem = { imageUrl: '', title: '', caption: '' };
-    if (kind === 'fresh') this.draft.freshPortfolio.push(newItem);
-    else this.draft.healedPortfolio.push(newItem);
+    this.draft.portfolio.push(newItem);
   }
 
-  removeItem(kind: 'fresh' | 'healed', index: number): void {
-    if (kind === 'fresh') this.draft.freshPortfolio.splice(index, 1);
-    else this.draft.healedPortfolio.splice(index, 1);
+  removeItem(index: number): void {
+    this.draft.portfolio.splice(index, 1);
   }
 
   save(): void {

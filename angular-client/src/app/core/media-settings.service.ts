@@ -9,8 +9,7 @@ export type PortfolioItem = {
 export type MediaSettings = {
   profileImageUrl: string;
   avatarImageUrl: string;
-  freshPortfolio: PortfolioItem[];
-  healedPortfolio: PortfolioItem[];
+  portfolio: PortfolioItem[];
 };
 
 @Injectable({ providedIn: 'root' })
@@ -22,7 +21,19 @@ export class MediaSettingsService {
     if (!raw) return null;
 
     try {
-      return JSON.parse(raw) as MediaSettings;
+      const parsed = JSON.parse(raw) as Partial<MediaSettings> & {
+        freshPortfolio?: PortfolioItem[];
+        healedPortfolio?: PortfolioItem[];
+      };
+
+      const migratedPortfolio = parsed.portfolio
+        ?? [ ...(parsed.freshPortfolio ?? []), ...(parsed.healedPortfolio ?? []) ];
+
+      return {
+        profileImageUrl: parsed.profileImageUrl ?? '',
+        avatarImageUrl: parsed.avatarImageUrl ?? '',
+        portfolio: migratedPortfolio
+      };
     } catch {
       return null;
     }
