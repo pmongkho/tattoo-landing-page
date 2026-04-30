@@ -1,0 +1,13 @@
+<div class="p-6 max-w-2xl"><h1 class="text-2xl mb-4">{{isEdit ? 'Edit' : 'New'}} Tattoo Deal</h1>
+<form [formGroup]="form" (ngSubmit)="save()" class="grid gap-3">
+<input class="bg-zinc-900 p-2" placeholder="Title" formControlName="title" />
+<input class="bg-zinc-900 p-2" placeholder="Style" formControlName="style" />
+<input class="bg-zinc-900 p-2" placeholder="Placement" formControlName="placement" />
+<input class="bg-zinc-900 p-2" placeholder="Size" formControlName="size" />
+<input class="bg-zinc-900 p-2" type="number" placeholder="OriginalPrice" formControlName="originalPrice" />
+<input class="bg-zinc-900 p-2" type="number" placeholder="DiscountedPrice" formControlName="discountedPrice" />
+<textarea class="bg-zinc-900 p-2" placeholder="Description" formControlName="description"></textarea>
+<input class="bg-zinc-900 p-2" placeholder="Reference image URL" formControlName="referenceImageUrl" />
+<label><input type="checkbox" formControlName="isAvailable"/> Is available</label>
+<label><input type="checkbox" formControlName="isFeatured"/> Is featured</label>
+<button class="bg-white text-black p-2" [disabled]="form.invalid">Save</button></form></div>
