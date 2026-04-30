@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../core/api.service';
 import { RouterLink } from '@angular/router';
+import { MediaSettingsService } from '../core/media-settings.service';
 
 type PortfolioTab = 'fresh' | 'healed';
 
@@ -19,6 +20,8 @@ type PortfolioItem = {
   templateUrl: './landing-page.component.html'
 })
 export class LandingPageComponent {
+  profileImageUrl = 'https://images.unsplash.com/photo-1542727365-19732a80dcfd?auto=format&fit=crop&w=1200&q=80';
+  avatarImageUrl = 'https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?auto=format&fit=crop&w=300&q=80';
   submitState: 'idle' | 'success' | 'error' = 'idle';
   activePortfolioTab: PortfolioTab = 'fresh';
 
@@ -60,7 +63,15 @@ export class LandingPageComponent {
 
   form!: ReturnType<FormBuilder['group']>;
 
-  constructor(private api: ApiService, private fb: FormBuilder) {
+  constructor(private api: ApiService, private fb: FormBuilder, private mediaSettings: MediaSettingsService) {
+    const settings = this.mediaSettings.get();
+    if (settings) {
+      this.profileImageUrl = settings.profileImageUrl || this.profileImageUrl;
+      this.avatarImageUrl = settings.avatarImageUrl || this.avatarImageUrl;
+      this.freshPortfolio = settings.freshPortfolio?.length ? settings.freshPortfolio : this.freshPortfolio;
+      this.healedPortfolio = settings.healedPortfolio?.length ? settings.healedPortfolio : this.healedPortfolio;
+    }
+
     this.form = this.fb.group({
       name: ['', [Validators.required]],
       phoneNumber: ['', [Validators.required]],
