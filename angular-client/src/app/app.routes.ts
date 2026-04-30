@@ -15,8 +15,5 @@ export const appRoutes: Routes = [
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [adminGuard] },
   { path: 'admin/consultations', component: AdminConsultationsComponent, canActivate: [adminGuard] },
-  { path: 'admin/tattoo-deals', component: AdminTattooDealsComponent, canActivate: [adminGuard] },
-  { path: 'admin/tattoo-deals/new', component: AdminTattooDealEditComponent, canActivate: [adminGuard] },
-  { path: 'admin/tattoo-deals/:id/edit', component: AdminTattooDealEditComponent, canActivate: [adminGuard] },
   { path: 'admin/media', component: AdminMediaManagerComponent, canActivate: [adminGuard] }
 ];
