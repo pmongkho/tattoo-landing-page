@@ -2,6 +2,7 @@ using dotnet_server._Data;
 using dotnet_server._Integrations;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,10 @@ builder.Services.Configure<SquareApiOptions>(builder.Configuration.GetSection(Sq
 builder.Services.AddScoped<IQuoLeadMessagingClient, QuoLeadMessagingPlaceholder>();
 builder.Services.AddScoped<ISquareBookingClient, SquareBookingPlaceholder>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
