@@ -74,8 +74,6 @@
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/BuildHost-netcore/zh-Hans/System.CommandLine.resources.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/BuildHost-netcore/zh-Hant/System.CommandLine.resources.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Humanizer.dll
-/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
-/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.Build.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.Build.Framework.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.Build.Tasks.Core.dll
@@ -91,12 +89,6 @@
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.EntityFrameworkCore.Design.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.EntityFrameworkCore.Relational.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.Extensions.DependencyModel.dll
-/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.IdentityModel.Abstractions.dll
-/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.IdentityModel.JsonWebTokens.dll
-/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.IdentityModel.Logging.dll
-/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.dll
-/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.IdentityModel.Tokens.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.NET.StringTools.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Microsoft.OpenApi.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/Mono.TextTemplating.dll
@@ -114,7 +106,6 @@
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/System.Composition.TypedParts.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/System.Configuration.ConfigurationManager.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/System.Formats.Nrbf.dll
-/Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/System.IdentityModel.Tokens.Jwt.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/System.Reflection.MetadataLoadContext.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/System.Resources.Extensions.dll
 /Users/a_mac/Desktop/CS PROJECTS/DOTNET/tattoo-landing-page/dotnet-server/bin/Debug/net10.0/System.Security.Cryptography.ProtectedData.dll
