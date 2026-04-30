@@ -18,7 +18,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.Configure<QuoApiOptions>(builder.Configuration.GetSection(QuoApiOptions.SectionName));
 builder.Services.Configure<SquareApiOptions>(builder.Configuration.GetSection(SquareApiOptions.SectionName));
-builder.Services.AddScoped<IQuoLeadMessagingClient, QuoLeadMessagingPlaceholder>();
+builder.Services.AddHttpClient<IQuoLeadMessagingClient, QuoLeadMessagingClient>((sp, client) =>
+{
+    var quoOptions = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<QuoApiOptions>>().Value;
+    if (!string.IsNullOrWhiteSpace(quoOptions.BaseUrl))
+    {
+        client.BaseAddress = new Uri(quoOptions.BaseUrl);
+    }
+});
 builder.Services.AddScoped<ISquareBookingClient, SquareBookingPlaceholder>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>

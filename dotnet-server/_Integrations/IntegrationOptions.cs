@@ -15,4 +15,7 @@ public class SquareApiOptions
     public string AccessToken { get; set; } = string.Empty;
     public string LocationId { get; set; } = string.Empty;
     public bool Enabled { get; set; }
+    public string SmsPath { get; set; } = "/messages";
+    public string BusinessName { get; set; } = "Afterlife Tattoo";
+    public string MessageTemplate { get; set; } = string.Empty;
 }
