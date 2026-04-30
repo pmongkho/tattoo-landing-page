@@ -1,4 +1,14 @@
-export type ConsultationStatus = 'New' | 'Contacted' | 'Booked' | 'Declined';
+export type ConsultationStatus =
+  | 'New'
+  | 'Contacted'
+  | 'ConsultScheduled'
+  | 'ConsultCompleted'
+  | 'DesignInProgress'
+  | 'DepositRequested'
+  | 'DepositPaid'
+  | 'Booked'
+  | 'Completed'
+  | 'FollowUp';
 
 export interface TattooDeal {
   id: string;
