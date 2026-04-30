@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using dotnet_server._Models;
 
 namespace dotnet_server._Dtos;
 
@@ -13,9 +12,6 @@ public class CreateConsultationRequest
 
     [Required, MaxLength(40)]
     public string PhoneNumber { get; set; } = string.Empty;
-
-    [MaxLength(120)]
-    public string? PreferredArtist { get; set; }
 
     [Required, MaxLength(120)]
     public string Style { get; set; } = string.Empty;
@@ -36,12 +32,4 @@ public class CreateConsultationRequest
 
     [Required]
     public bool AgreedToTerms { get; set; }
-
-    public Guid? TattooDealId { get; set; }
-}
-
-public class UpdateConsultationStatusRequest
-{
-    [Required]
-    public ConsultationStatus Status { get; set; }
 }
