@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../core/api.service';
+import { RouterLink } from '@angular/router';
 
 type PortfolioTab = 'fresh' | 'healed';
 
@@ -14,7 +15,7 @@ type PortfolioItem = {
 @Component({
   standalone: true,
   selector: 'app-landing-page',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './landing-page.component.html'
 })
 export class LandingPageComponent {

@@ -21,7 +21,7 @@ public class ConsultationsController(
         {
             Name = request.Name,
             PhoneNumber = request.PhoneNumber,
-            Timeline = request.Timeline
+            Timeline = string.IsNullOrWhiteSpace(request.Timeline) ? "Not provided" : request.Timeline.Trim()
         };
 
         dbContext.Consultations.Add(consultation);
