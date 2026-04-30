@@ -7,11 +7,7 @@ import { TattooDeal } from '../models/models';
 @Component({
   standalone: true,
   imports: [CommonModule, RouterLink],
-  template: `<div class="p-6"><h1 class="text-2xl mb-4">Tattoo Deals</h1>
-<a routerLink="/admin/tattoo-deals/new" class="underline">Create new deal</a>
-<div class="mt-4 grid gap-3"><div class="bg-zinc-900 p-4" *ngFor="let d of deals"><h3>{{ d.title }}</h3><p>{{ d.description }}</p><p>\${{ d.discountedPrice }}</p>
-<a [routerLink]="['/admin/tattoo-deals', d.id, 'edit']" class="mr-3 underline">Edit</a><button (click)="disable(d.id)" class="underline">Disable</button>
-</div></div></div>`
+  templateUrl: './admin-tattoo-deals.component.html'
 })
 export class AdminTattooDealsComponent implements OnInit {
   deals: TattooDeal[] = [];
