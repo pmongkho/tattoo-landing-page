@@ -6,6 +6,11 @@ public class QuoApiOptions
     public string BaseUrl { get; set; } = string.Empty;
     public string ApiKey { get; set; } = string.Empty;
     public bool Enabled { get; set; }
+    public string SmsPath { get; set; } = "/v1/messages";
+    public string PhoneNumberId { get; set; } = string.Empty;
+    public string UserId { get; set; } = string.Empty;
+    public string From { get; set; } = string.Empty;
+    public string MessageTemplate { get; set; } = string.Empty;
 }
 
 public class SquareApiOptions
@@ -15,7 +20,9 @@ public class SquareApiOptions
     public string AccessToken { get; set; } = string.Empty;
     public string LocationId { get; set; } = string.Empty;
     public bool Enabled { get; set; }
-    public string SmsPath { get; set; } = "/messages";
-    public string BusinessName { get; set; } = "Afterlife Tattoo";
-    public string MessageTemplate { get; set; } = string.Empty;
+    public string CustomerId { get; set; } = string.Empty;
+    public string TeamMemberId { get; set; } = string.Empty;
+    public string ServiceVariationId { get; set; } = string.Empty;
+    public int AppointmentDurationMinutes { get; set; } = 60;
+    public int DepositAmount { get; set; } = 50;
 }

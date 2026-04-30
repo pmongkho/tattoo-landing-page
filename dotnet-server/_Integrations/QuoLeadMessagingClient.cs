@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using dotnet_server._Models;
@@ -25,18 +24,15 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
             return;
         }
 
-        var endpoint = string.IsNullOrWhiteSpace(_options.SmsPath) ? "/messages" : _options.SmsPath;
+        var endpoint = string.IsNullOrWhiteSpace(_options.SmsPath) ? "/v1/messages" : _options.SmsPath;
         var payload = new
         {
-            to = consultation.PhoneNumber,
-            message = BuildMessage(consultation),
-            metadata = new
-            {
-                source = "tattoo-landing-page",
-                consultationId = consultation.Id,
-                consultation.Name,
-                consultation.Timeline
-            }
+            content = BuildMessage(consultation),
+            from = string.IsNullOrWhiteSpace(_options.From) ? null : _options.From,
+            to = new[] { consultation.PhoneNumber },
+            phoneNumberId = _options.PhoneNumberId,
+            userId = _options.UserId,
+            setInboxStatus = "done"
         };
 
         using var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
@@ -44,7 +40,7 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
             Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
         };
 
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.ApiKey);
+        request.Headers.TryAddWithoutValidation("Authorization", _options.ApiKey);
 
         using var response = await httpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
@@ -66,7 +62,6 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
                 .Replace("{timeline}", consultation.Timeline, StringComparison.OrdinalIgnoreCase);
         }
 
-        var businessName = string.IsNullOrWhiteSpace(_options.BusinessName) ? "Afterlife Tattoo" : _options.BusinessName;
-        return $"Hi {consultation.Name}, thanks for submitting your consultation to {businessName}. We'll text you soon to confirm details.";
+        return $"Hi {consultation.Name}, thanks for submitting your consultation. We'll text you soon to confirm details.";
     }
 }
