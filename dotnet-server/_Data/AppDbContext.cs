@@ -6,7 +6,6 @@ namespace dotnet_server._Data;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<Consultation> Consultations => Set<Consultation>();
-    public DbSet<ConsultationPreferredDay> ConsultationPreferredDays => Set<ConsultationPreferredDay>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -15,22 +14,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         builder.Entity<Consultation>(entity =>
         {
             entity.Property(x => x.Name).HasMaxLength(120);
-            entity.Property(x => x.Email).HasMaxLength(180);
             entity.Property(x => x.PhoneNumber).HasMaxLength(40);
-            entity.Property(x => x.Style).HasMaxLength(120);
-            entity.Property(x => x.Placement).HasMaxLength(120);
-            entity.Property(x => x.Size).HasMaxLength(120);
-            entity.Property(x => x.Budget).HasMaxLength(120);
-            entity.Property(x => x.Description).HasMaxLength(2000);
-        });
-
-        builder.Entity<ConsultationPreferredDay>(entity =>
-        {
-            entity.Property(x => x.Day).HasMaxLength(20);
-            entity.HasOne(x => x.Consultation)
-                .WithMany(x => x.PreferredDays)
-                .HasForeignKey(x => x.ConsultationId)
-                .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(x => x.Timeline).HasMaxLength(80);
         });
     }
 }

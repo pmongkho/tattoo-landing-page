@@ -1,4 +1,5 @@
 using dotnet_server._Data;
+using dotnet_server._Integrations;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -13,6 +14,11 @@ var connectionString = NormalizeConnectionString(rawConnectionString);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+builder.Services.Configure<QuoApiOptions>(builder.Configuration.GetSection(QuoApiOptions.SectionName));
+builder.Services.Configure<SquareApiOptions>(builder.Configuration.GetSection(SquareApiOptions.SectionName));
+builder.Services.AddScoped<IQuoLeadMessagingClient, QuoLeadMessagingPlaceholder>();
+builder.Services.AddScoped<ISquareBookingClient, SquareBookingPlaceholder>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

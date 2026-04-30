@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../core/api.service';
-import { TattooDeal } from '../models/models';
 
 type PortfolioTab = 'fresh' | 'healed';
 
@@ -18,9 +17,7 @@ type PortfolioItem = {
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './landing-page.component.html'
 })
-export class LandingPageComponent implements OnInit {
-  deals: TattooDeal[] = [];
-  loadingDeals = false;
+export class LandingPageComponent {
   submitState: 'idle' | 'success' | 'error' = 'idle';
   activePortfolioTab: PortfolioTab = 'fresh';
 
@@ -65,16 +62,8 @@ export class LandingPageComponent implements OnInit {
   constructor(private api: ApiService, private fb: FormBuilder) {
     this.form = this.fb.group({
       name: ['', [Validators.required]],
-      email: ['booking@wohu.tattoo', [Validators.required, Validators.email]],
       phoneNumber: ['', [Validators.required]],
-      style: ['Black & Grey Realism', [Validators.required]],
-      placement: ['Custom', [Validators.required]],
-      size: ['To discuss', [Validators.required]],
-      budget: [''],
-      description: ['Tattoo consultation request from landing page.', [Validators.required]],
       timeline: ['', [Validators.required]],
-      agreedToTerms: [true, [Validators.requiredTrue]],
-      tattooDealId: ['']
     });
   }
 
@@ -82,17 +71,9 @@ export class LandingPageComponent implements OnInit {
     return this.activePortfolioTab === 'fresh' ? this.freshPortfolio : this.healedPortfolio;
   }
 
-  ngOnInit(): void {
-    this.loadingDeals = true;
-    this.api.getTattooDeals().subscribe({ next: deals => { this.deals = deals; this.loadingDeals = false; }, error: () => this.loadingDeals = false });
-  }
 
   setPortfolioTab(tab: PortfolioTab): void {
     this.activePortfolioTab = tab;
-  }
-
-  bookDeal(deal: TattooDeal): void {
-    this.form.patchValue({ style: deal.style, placement: deal.placement, size: deal.size, budget: String(deal.discountedPrice), tattooDealId: deal.id });
   }
 
   submit(): void {
@@ -101,14 +82,7 @@ export class LandingPageComponent implements OnInit {
     this.api.submitConsultation(this.form.value).subscribe({
       next: () => {
         this.submitState = 'success';
-        this.form.reset({
-          style: 'Black & Grey Realism',
-          placement: 'Custom',
-          size: 'To discuss',
-          description: 'Tattoo consultation request from landing page.',
-          timeline: '',
-          agreedToTerms: true
-        });
+        this.form.reset({ timeline: '' });
       },
       error: () => this.submitState = 'error'
     });
