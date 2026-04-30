@@ -10,6 +10,6 @@ public class CreateConsultationRequest
     [Required, MaxLength(40)]
     public string PhoneNumber { get; set; } = string.Empty;
 
-    [Required, MaxLength(80)]
-    public string Timeline { get; set; } = string.Empty;
+    [MaxLength(80)]
+    public string? Timeline { get; set; }
 }

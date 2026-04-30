@@ -1,0 +1,55 @@
+<div class="min-h-screen bg-[#efefef] px-6 py-10 text-slate-800 sm:py-14">
+  <main class="mx-auto max-w-[660px] rounded-md border border-slate-200 bg-white px-6 py-10 shadow-sm sm:px-10">
+    <div class="flex justify-center">
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Chinese_double_happiness_%28shu%C4%81ngx%C7%90%29.svg/512px-Chinese_double_happiness_%28shu%C4%81ngx%C7%90%29.svg.png"
+        alt="Logo"
+        class="h-32 w-32 object-contain"
+      />
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-8 space-y-6">
+      <label class="block space-y-2">
+        <span class="text-2xl font-medium">First Name</span>
+        <input
+          class="h-12 w-full rounded border border-slate-300 bg-white px-3 text-lg placeholder:text-slate-400 focus:outline-none"
+          placeholder="First Name"
+          formControlName="name"
+        />
+      </label>
+
+      <label class="block space-y-2">
+        <span class="text-2xl font-medium">Phone *</span>
+        <input
+          class="h-12 w-full rounded border border-slate-300 bg-white px-3 text-lg placeholder:text-slate-400 focus:outline-none"
+          placeholder="📱  Phone"
+          formControlName="phoneNumber"
+        />
+      </label>
+
+      <label class="flex items-start gap-3 text-lg">
+        <input type="checkbox" formControlName="smsConsent" class="mt-1 h-4 w-4" />
+        <span>By checking this box, I consent to receive text messages from <strong>Skin Design Tattoos</strong></span>
+      </label>
+
+      <button
+        class="h-12 w-full rounded bg-[#1396c6] text-xl font-medium text-white transition hover:bg-[#1089b5] disabled:cursor-not-allowed disabled:opacity-60"
+        [disabled]="form.invalid"
+      >
+        Connect with Robert
+      </button>
+
+      <p class="text-center text-sm text-emerald-700" *ngIf="submitState === 'success'">Consultation submitted successfully.</p>
+      <p class="text-center text-sm text-rose-700" *ngIf="submitState === 'error'">Unable to submit consultation. Please try again.</p>
+
+      <p class="pt-1 text-center text-lg underline">
+        <a href="#" class="text-slate-700">Privacy Policy</a> |
+        <a href="#" class="text-slate-700">Terms of Service</a>
+      </p>
+    </form>
+
+    <p class="mt-6 text-center text-sm">
+      <a routerLink="/" class="underline">Back to homepage</a>
+    </p>
+  </main>
+</div>
