@@ -7,29 +7,9 @@ public class CreateConsultationRequest
     [Required, MaxLength(120)]
     public string Name { get; set; } = string.Empty;
 
-    [Required, EmailAddress, MaxLength(180)]
-    public string Email { get; set; } = string.Empty;
-
     [Required, MaxLength(40)]
     public string PhoneNumber { get; set; } = string.Empty;
 
-    [Required, MaxLength(120)]
-    public string Style { get; set; } = string.Empty;
-
-    [Required, MaxLength(120)]
-    public string Placement { get; set; } = string.Empty;
-
-    [Required, MaxLength(120)]
-    public string Size { get; set; } = string.Empty;
-
-    [MaxLength(120)]
-    public string? Budget { get; set; }
-
-    public ICollection<string> PreferredDays { get; set; } = new List<string>();
-
-    [Required, MaxLength(2000)]
-    public string Description { get; set; } = string.Empty;
-
-    [Required]
-    public bool AgreedToTerms { get; set; }
+    [Required, MaxLength(80)]
+    public string Timeline { get; set; } = string.Empty;
 }

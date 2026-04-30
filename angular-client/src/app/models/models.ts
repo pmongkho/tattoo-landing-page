@@ -19,15 +19,8 @@ export interface TattooDeal {
 export interface Consultation {
   id: string;
   name: string;
-  email: string;
   phoneNumber: string;
-  preferredArtist: string;
-  style: string;
-  placement: string;
-  size: string;
-  budget?: string;
-  description: string;
-  preferredDays: { day: string }[];
+  timeline: string;
   status: ConsultationStatus;
   createdAt: string;
 }
