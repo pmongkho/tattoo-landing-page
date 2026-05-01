@@ -13,6 +13,7 @@ import { ApiService } from '../core/api.service';
 export class PhoneFormComponent {
   private readonly fb = inject(FormBuilder);
   submitState: 'idle' | 'success' | 'error' = 'idle';
+  isSubmitting = false;
 
   form = this.fb.group({
     name: ['', [Validators.required]],
@@ -23,7 +24,10 @@ export class PhoneFormComponent {
   constructor(private readonly api: ApiService) {}
 
   submit(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid || this.isSubmitting) return;
+
+    this.submitState = 'idle';
+    this.isSubmitting = true;
 
     this.api.submitConsultation({
       name: this.form.value.name,
@@ -31,9 +35,13 @@ export class PhoneFormComponent {
     }).subscribe({
       next: () => {
         this.submitState = 'success';
+        this.isSubmitting = false;
         this.form.reset({ smsConsent: false });
       },
-      error: () => this.submitState = 'error'
+      error: () => {
+        this.submitState = 'error';
+        this.isSubmitting = false;
+      }
     });
   }
 }
