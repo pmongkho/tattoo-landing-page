@@ -27,7 +27,7 @@ export class LandingPageComponent {
     return Array.from({ length: 10 }, (_, index) => {
       const imageNumber = String(index + 1).padStart(2, '0');
       return {
-        imageUrl: `assets/images/portfolio/tattoo-${imageNumber}.webp`,
+        imageUrl: `assets/images/portfolio/tattoo-${imageNumber}.jpeg`,
         title: `Portfolio Piece ${index + 1}`,
         caption: 'Custom tattoo work by Wo Hu'
       };

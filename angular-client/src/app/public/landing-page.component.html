@@ -133,6 +133,8 @@
 					[src]="item.imageUrl"
 					[alt]="item.title"
 					class="h-[65vh] w-full object-cover"
+          					loading="lazy"
+					(onerror)="$any($event.target).src='assets/images/logo.jpeg'"
 				/>
 			</article>
 		</div>
