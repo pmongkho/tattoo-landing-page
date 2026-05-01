@@ -23,6 +23,12 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
             logger.LogWarning("Quo enabled but BaseUrl/ApiKey missing. ConsultationId={ConsultationId}", consultation.Id);
             return;
         }
+        
+        if (string.IsNullOrWhiteSpace(_options.PhoneNumberId) || string.IsNullOrWhiteSpace(_options.UserId))
+        {
+            logger.LogWarning("Quo enabled but PhoneNumberId/UserId missing. ConsultationId={ConsultationId}", consultation.Id);
+            return;
+        }
 
         var endpoint = string.IsNullOrWhiteSpace(_options.SmsPath) ? "/v1/messages" : _options.SmsPath;
         var payload = new
@@ -62,6 +68,6 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
                 .Replace("{timeline}", consultation.Timeline, StringComparison.OrdinalIgnoreCase);
         }
 
-        return $"Hi {consultation.Name}, thanks for submitting your consultation. We'll text you soon to confirm details.";
+        return "Hey! I'm one of Wo Hu's booking managers, thanks for reaching out!\n\nWhat were you looking to get done with him?";
     }
 }
