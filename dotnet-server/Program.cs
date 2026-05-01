@@ -91,6 +91,33 @@ app.MapGet("/health/db", async (AppDbContext dbContext) =>
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    var allMigrations = (await dbContext.Database.GetMigrationsAsync()).ToList();
+    var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToHashSet(StringComparer.OrdinalIgnoreCase);
+    var firstMigration = allMigrations.FirstOrDefault();
+
+    if (firstMigration is not null && appliedMigrations.Count == 0)
+    {
+        var consultationsTableExists = await dbContext.Database.SqlQueryRaw<int>(@"""
+            SELECT CASE
+                WHEN EXISTS (
+                    SELECT 1
+                    FROM information_schema.tables
+                    WHERE table_schema = 'public'
+                      AND table_name = 'Consultations'
+                ) THEN 1 ELSE 0 END;
+            """).SingleAsync() == 1;
+
+        if (consultationsTableExists)
+        {
+            await dbContext.Database.ExecuteSqlInterpolatedAsync($@"""
+                INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+                VALUES ({firstMigration}, {'10.0.0'})
+                ON CONFLICT ("MigrationId") DO NOTHING;
+                """);
+        }
+    }
+
     await dbContext.Database.MigrateAsync();
 
     await dbContext.Database.ExecuteSqlRawAsync(@"
