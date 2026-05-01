@@ -1,0 +1,10 @@
+{
+  "buildCommand": "cd angular-client && npm install && npm run build",
+  "outputDirectory": "angular-client/dist/tattoo-landing-client/browser",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
