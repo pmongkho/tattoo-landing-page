@@ -79,18 +79,19 @@
 		<video
 			class="absolute inset-0 h-full w-full object-cover"
 			autoplay
-			muted
+			[muted]="true"
 			loop
 			playsinline
+      			(loadedmetadata)="configureHeroVideo($event)"
 		>
 			<source
 				[src]="heroVideoUrl"
 				type="video/mp4"
 			/>
-			<source
-				src="https://cdn.coverr.co/videos/coverr-scanning-tattoo-artist-work-1579/1080p.mp4"
+			<!-- <source
+				src="assets/videos/video.mp4"
 				type="video/mp4"
-			/>
+			/> -->
 		</video>
 		<div class="absolute inset-0 bg-black/50"></div>
 		<div
