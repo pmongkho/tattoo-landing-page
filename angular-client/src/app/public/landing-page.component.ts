@@ -21,23 +21,18 @@ export class LandingPageComponent {
   profileImageUrl = 'https://images.unsplash.com/photo-1542727365-19732a80dcfd?auto=format&fit=crop&w=1200&q=80';
   avatarImageUrl = 'https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?auto=format&fit=crop&w=300&q=80';
   submitState: 'idle' | 'success' | 'error' = 'idle';
-  portfolio: PortfolioItem[] = [
-    {
-      imageUrl: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=1200&q=80',
-      title: 'Raven Sleeve',
-      caption: 'Session 1 complete • high-contrast blackwork and texture.'
-    },
-    {
-      imageUrl: 'https://images.unsplash.com/photo-1470309864661-68328b2cd0a5?auto=format&fit=crop&w=1200&q=80',
-      title: 'Portrait Study',
-      caption: 'Fine-line facial detail with soft transitions in the shadows.'
-    },
-    {
-      imageUrl: 'https://images.unsplash.com/photo-1562962230-16e4623d36e6?auto=format&fit=crop&w=1200&q=80',
-      title: 'Forearm Concept',
-      caption: 'First pass complete with layout balanced for future additions.'
-    }
-  ];
+  portfolio: PortfolioItem[] = this.buildPortfolio();
+
+  private buildPortfolio(): PortfolioItem[] {
+    return Array.from({ length: 10 }, (_, index) => {
+      const imageNumber = String(index + 1).padStart(2, '0');
+      return {
+        imageUrl: `assets/images/portfolio/tattoo-${imageNumber}.webp`,
+        title: `Portfolio Piece ${index + 1}`,
+        caption: 'Custom tattoo work by Wo Hu'
+      };
+    });
+  }
 
   form!: ReturnType<FormBuilder['group']>;
 
