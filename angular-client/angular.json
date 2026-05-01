@@ -24,7 +24,7 @@
             "styles": [
               "src/styles.css"
             ],
-            "outputPath": "dist/tattoo-landing-client/browser"
+            "outputPath": "dist/tattoo-landing-client"
           }
         },
         "serve": {
