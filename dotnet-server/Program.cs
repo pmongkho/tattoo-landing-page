@@ -112,7 +112,7 @@ using (var scope = app.Services.CreateScope())
         {
             await dbContext.Database.ExecuteSqlInterpolatedAsync($@"""
                 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-                VALUES ({firstMigration}, {"10.0.0"})
+                VALUES ({firstMigration}, {'10.0.0'})
                 ON CONFLICT ("MigrationId") DO NOTHING;
                 """);
         }
