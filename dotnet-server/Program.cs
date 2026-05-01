@@ -72,6 +72,22 @@ app.UseCors(CorsPolicy);
 
 app.MapControllers();
 
+
+app.MapGet("/health/db", async (AppDbContext dbContext) =>
+{
+    try
+    {
+        var canConnect = await dbContext.Database.CanConnectAsync();
+        return canConnect
+            ? Results.Ok(new { status = "healthy", database = "reachable", checkedAt = DateTimeOffset.UtcNow })
+            : Results.Problem("Database is unreachable.", statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem($"Database health check failed: {ex.Message}", statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+});
+
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
