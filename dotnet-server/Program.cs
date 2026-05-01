@@ -91,7 +91,12 @@ app.MapGet("/health/db", async (AppDbContext dbContext) =>
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
+    await dbContext.Database.MigrateAsync();
+
+    await dbContext.Database.ExecuteSqlRawAsync(@"
+        ALTER TABLE ""Consultations""
+        ADD COLUMN IF NOT EXISTS ""Status"" character varying(40) NOT NULL DEFAULT 'New';
+    ");
 }
 
 app.Run();
