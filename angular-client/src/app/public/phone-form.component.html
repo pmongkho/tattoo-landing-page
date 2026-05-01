@@ -42,8 +42,9 @@
 			</label>
 
 			<button
+				type="submit"
 				class="h-12 w-full rounded bg-[#1396c6] text-xl font-medium text-white transition hover:bg-[#1089b5] disabled:cursor-not-allowed disabled:opacity-60"
-				[disabled]="form.invalid"
+				[disabled]="form.invalid || isSubmitting"
 			>
 				Connect with Wo Hu
 			</button>

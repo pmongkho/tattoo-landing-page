@@ -53,8 +53,9 @@
 				</label>
 
 				<button
+					type="submit"
 					class="h-14 w-full border border-slate-400 bg-slate-200 text-sm uppercase tracking-[0.18em] transition hover:bg-slate-100"
-					[disabled]="form.invalid"
+					[disabled]="form.invalid || isSubmitting"
 					>Connect With Wo Hu →</button
 				>
 
@@ -82,6 +83,10 @@
 			loop
 			playsinline
 		>
+			<source
+				[src]="heroVideoUrl"
+				type="video/mp4"
+			/>
 			<source
 				src="https://cdn.coverr.co/videos/coverr-scanning-tattoo-artist-work-1579/1080p.mp4"
 				type="video/mp4"

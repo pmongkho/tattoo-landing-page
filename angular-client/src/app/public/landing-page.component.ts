@@ -18,10 +18,12 @@ type PortfolioItem = {
 	templateUrl: './landing-page.component.html',
 })
 export class LandingPageComponent {
+  heroVideoUrl = 'assets/videos/hero.mp4'
 
 	avatarImageUrl =
 		'https://scontent-dfw5-2.cdninstagram.com/v/t51.82787-19/647361603_18083963795211234_4039720718771227224_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4zMjAuQzMifQ%3D%3D&_nc_ohc=KBdSpMcnR-4Q7kNvwGUMBjy&_nc_oc=AdpsKSseqifIJT3GW8Q5eDPXC2Fa67njR2o6xVExstPc7v5wP9Y5CMfVn4sc8xxZsOU&_nc_zt=24&_nc_ht=scontent-dfw5-2.cdninstagram.com&_nc_gid=eGTkS9gquc02ub2qyYzE8g&_nc_ss=7b6a8&oh=00_Af6XP6PcXEx7QQPqG2TQbdCjoI_RHkh9apCYe-b5HgX7sQ&oe=69FA882C'
 	submitState: 'idle' | 'success' | 'error' = 'idle'
+	isSubmitting = false
 	portfolio: PortfolioItem[] = this.buildPortfolio()
 
 	private buildPortfolio(): PortfolioItem[] {
@@ -58,14 +60,21 @@ export class LandingPageComponent {
 	}
 
 	submit(): void {
-		if (this.form.invalid) return
+		if (this.form.invalid || this.isSubmitting) return
+
+		this.submitState = 'idle'
+		this.isSubmitting = true
 
 		this.api.submitConsultation(this.form.value).subscribe({
 			next: () => {
 				this.submitState = 'success'
+				this.isSubmitting = false
 				this.form.reset({ timeline: '' })
 			},
-			error: () => (this.submitState = 'error'),
+			error: () => {
+				this.submitState = 'error'
+				this.isSubmitting = false
+			},
 		})
 	}
 }
