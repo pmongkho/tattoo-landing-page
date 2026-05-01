@@ -45,6 +45,12 @@ dotnet ef database update
 dotnet run
 ```
 
+If you are using a Render/Postgres URL format (`postgresql://...`), export it directly and the app will normalize it:
+
+```bash
+export ConnectionStrings__DefaultConnection="postgresql://user:password@host:5432/database"
+```
+
 ### 3) Frontend setup (Angular)
 
 From `angular-client`:
@@ -91,6 +97,14 @@ cd dotnet-server
 dotnet ef migrations add <MigrationName>
 dotnet ef database update
 ```
+
+If `dotnet ef database update` fails with `The ConnectionString property has not been initialized`, verify the variable exists in your current shell:
+
+```bash
+echo "$ConnectionStrings__DefaultConnection"
+```
+
+You can also set `DATABASE_URL` instead; the EF design-time factory supports both `ConnectionStrings__DefaultConnection` and `DATABASE_URL`.
 
 ## Security notes
 
