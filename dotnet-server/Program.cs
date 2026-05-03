@@ -46,14 +46,22 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(CorsPolicy, policy =>
     {
-        var allowedOrigins = new List<string> { "http://localhost:4200","https://wohutattoo.vercel.app" };
+        var allowedOrigins = new List<string>
+        {
+            "http://localhost:4200",
+            "https://wohutattoo.vercel.app",
+            "https://www.wohutattoo.vercel.app"
+        };
+
         var frontendOrigin = builder.Configuration["FRONTEND_ORIGIN"];
         if (!string.IsNullOrWhiteSpace(frontendOrigin))
         {
             allowedOrigins.Add(frontendOrigin);
         }
 
-        policy.WithOrigins(allowedOrigins.Distinct().ToArray())
+        policy
+            .WithOrigins(allowedOrigins.Distinct(StringComparer.OrdinalIgnoreCase).ToArray())
+            .SetIsOriginAllowedToAllowWildcardSubdomains()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
