@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Security.Authentication;
 using dotnet_server._Models;
 using Microsoft.Extensions.Options;
 
@@ -49,15 +50,24 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
         var trimmedApiKey = _options.ApiKey.Trim();
         request.Headers.TryAddWithoutValidation("Authorization", trimmedApiKey);
 
-        using var response = await httpClient.SendAsync(request, cancellationToken);
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            var body = await response.Content.ReadAsStringAsync(cancellationToken);
-            logger.LogWarning("Quo SMS failed. Status={StatusCode} ConsultationId={ConsultationId} Body={Body}", (int)response.StatusCode, consultation.Id, body);
-            return;
-        }
+            using var response = await httpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync(cancellationToken);
+                logger.LogWarning("Quo SMS failed. Status={StatusCode} ConsultationId={ConsultationId} Body={Body}", (int)response.StatusCode, consultation.Id, body);
+                return;
+            }
 
-        logger.LogInformation("Quo SMS sent for consultation {ConsultationId}.", consultation.Id);
+            logger.LogInformation("Quo SMS sent for consultation {ConsultationId}.", consultation.Id);
+        }
+        catch (HttpRequestException ex) when (ex.InnerException is AuthenticationException)
+        {
+            logger.LogWarning(ex,
+                "Quo SMS TLS handshake failed for consultation {ConsultationId}. Verify QuoApi:BaseUrl uses a TLS 1.2+ HTTPS endpoint.",
+                consultation.Id);
+        }
     }
 
     private string BuildMessage(Consultation consultation)
