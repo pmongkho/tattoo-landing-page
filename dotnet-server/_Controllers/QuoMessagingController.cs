@@ -31,11 +31,18 @@ public class QuoMessagingController(IQuoLeadMessagingClient quoLeadMessagingClie
             Timeline = string.IsNullOrWhiteSpace(request.Timeline) ? "Not provided" : request.Timeline.Trim()
         };
 
-        await quoLeadMessagingClient.NotifyNewLeadAsync(consultation, cancellationToken);
+        var dispatchResult = await quoLeadMessagingClient.SendNewLeadAsync(consultation, cancellationToken);
 
         return Ok(new
         {
-            message = "Test message request sent to QuoLeadMessagingClient.",
+            message = dispatchResult.Sent
+                ? "Quo accepted the test message."
+                : "Quo did not accept the test message.",
+            dispatchResult.Sent,
+            dispatchResult.Endpoint,
+            dispatchResult.StatusCode,
+            dispatchResult.Error,
+            dispatchResult.ResponseBody,
             consultation.Name,
             consultation.PhoneNumber,
             consultation.Timeline
