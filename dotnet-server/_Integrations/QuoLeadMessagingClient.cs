@@ -1,4 +1,4 @@
-using System.Text;
+no using System.Text;
 using System.Text.Json;
 using System.Security.Authentication;
 using dotnet_server._Models;
@@ -100,7 +100,7 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
                 .Replace("{timeline}", consultation.Timeline, StringComparison.OrdinalIgnoreCase);
         }
 
-        return "Hey! I'm one of Wo Hu's booking managers, thanks for reaching out!\n\nWhat were you looking to get done with him?";
+        return "Hey! I'm one of Wo Hu's booking managers, thanks for reaching out!\n\nWhat were you interested in getting done? :)";
     }
 
     private static string NormalizeSmsPath(string? smsPath)
