@@ -1,7 +1,6 @@
 using System.Text;
 using System.Text.Json;
 using dotnet_server._Models;
-using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
 
 namespace dotnet_server._Integrations;
@@ -25,13 +24,22 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
             return;
         }
         
-        var endpoint = string.IsNullOrWhiteSpace(_options.SmsPath) ? "/v1/messages" : _options.SmsPath;
-        var payload = new
+        var endpoint = NormalizeSmsPath(_options.SmsPath);
+        var payload = new Dictionary<string, object?>
         {
-            content = BuildMessage(consultation),
-            from = string.IsNullOrWhiteSpace(_options.From) ? null : _options.From,
-            to = new[] { consultation.PhoneNumber }
+            ["content"] = BuildMessage(consultation),
+            ["to"] = new[] { consultation.PhoneNumber }
         };
+
+        if (!string.IsNullOrWhiteSpace(_options.From))
+        {
+            payload["from"] = _options.From;
+        }
+
+        if (!string.IsNullOrWhiteSpace(_options.UserId))
+        {
+            payload["userId"] = _options.UserId;
+        }
 
         using var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
         {
@@ -39,14 +47,7 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
         };
 
         var trimmedApiKey = _options.ApiKey.Trim();
-        if (trimmedApiKey.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-        {
-            request.Headers.TryAddWithoutValidation("Authorization", trimmedApiKey);
-        }
-        else
-        {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", trimmedApiKey);
-        }
+        request.Headers.TryAddWithoutValidation("Authorization", trimmedApiKey);
 
         using var response = await httpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
@@ -69,5 +70,11 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
         }
 
         return "Hey! I'm one of Wo Hu's booking managers, thanks for reaching out!\n\nWhat were you looking to get done with him?";
+    }
+
+    private static string NormalizeSmsPath(string? smsPath)
+    {
+        var value = string.IsNullOrWhiteSpace(smsPath) ? "messages" : smsPath.Trim();
+        return value.TrimStart('/');
     }
 }
