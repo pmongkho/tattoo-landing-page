@@ -17,7 +17,8 @@ public record QuoMessageDispatchResult(
     int? StatusCode,
     string? ResponseBody,
     string? Error,
-    string Endpoint);
+    string Endpoint,
+    string? BaseUrl);
 
 public interface ISquareBookingClient
 {

@@ -40,6 +40,7 @@ public class QuoMessagingController(IQuoLeadMessagingClient quoLeadMessagingClie
                 : "Quo did not accept the test message.",
             dispatchResult.Sent,
             dispatchResult.Endpoint,
+            dispatchResult.BaseUrl,
             dispatchResult.StatusCode,
             dispatchResult.Error,
             dispatchResult.ResponseBody,
