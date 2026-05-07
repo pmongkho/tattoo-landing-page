@@ -25,13 +25,40 @@
               "src/styles.css"
             ],
             "outputPath": "dist/tattoo-landing-client"
-          }
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "buildTarget": "tattoo-landing-client:build"
-          }
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "tattoo-landing-client:build:production"
+            },
+            "development": {
+              "buildTarget": "tattoo-landing-client:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
         }
       }
     }
