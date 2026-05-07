@@ -8,13 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 const string CorsPolicy = "TattooFrontend";
 
-var rawConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
-
-var connectionString = NormalizeConnectionString(rawConnectionString);
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<AppDbContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.Configure<QuoApiOptions>(builder.Configuration.GetSection(QuoApiOptions.SectionName));
 builder.Services.Configure<SquareApiOptions>(builder.Configuration.GetSection(SquareApiOptions.SectionName));
@@ -100,25 +95,3 @@ app.MapGet("/health/db", async (AppDbContext dbContext) =>
 
 app.Run();
 
-static string NormalizeConnectionString(string connectionString)
-{
-    if (!connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase)
-        && !connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase))
-    {
-        return connectionString;
-    }
-
-    var uri = new Uri(connectionString);
-    var userInfoParts = uri.UserInfo.Split(':', 2);
-    var builder = new NpgsqlConnectionStringBuilder
-    {
-        Host = uri.Host,
-        Port = uri.Port > 0 ? uri.Port : 5432,
-        Database = uri.AbsolutePath.TrimStart('/'),
-        Username = userInfoParts[0],
-        Password = userInfoParts.Length > 1 ? userInfoParts[1] : string.Empty,
-        SslMode = SslMode.Require
-    };
-
-    return builder.ConnectionString;
-}

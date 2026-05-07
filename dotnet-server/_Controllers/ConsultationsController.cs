@@ -23,15 +23,9 @@ public class ConsultationsController(
             return ValidationProblem(detail: "Please provide a valid US phone number.");
         }
 
-        var trimmedName = request.Name.Trim();
-        if (!HasAtLeastTwoWords(trimmedName))
-        {
-            return ValidationProblem(detail: "Please provide your full name (first and last name).");
-        }
-
         var consultation = new Consultation
         {
-            Name = trimmedName,
+            Name = request.Name.Trim(),
             PhoneNumber = normalizedPhone,
             Timeline = string.IsNullOrWhiteSpace(request.Timeline) ? "Not provided" : request.Timeline.Trim()
         };

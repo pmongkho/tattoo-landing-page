@@ -54,7 +54,7 @@ export class LandingPageComponent {
 		}
 
 		this.form = this.fb.group({
-			name: ['', [Validators.required, Validators.pattern(/^(?=.{3,}$)\s*\S+\s+\S+(?:.*\S)?\s*$/)]],
+			name: ['', [Validators.required]],
 			phoneNumber: ['', [Validators.required, Validators.pattern(/^\+?1?[\s.-]?(?:\([2-9]\d{2}\)|[2-9]\d{2})[\s.-]?\d{3}[\s.-]?\d{4}$/)]],
 			timeline: ['', [Validators.required]],
 		})
