@@ -27,10 +27,10 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
             return new QuoMessageDispatchResult(false, null, null, "Quo notifications disabled.", endpoint, baseUrl);
         }
 
-        if (string.IsNullOrWhiteSpace(_options.ApiKey) || string.IsNullOrWhiteSpace(_options.BaseUrl))
+        if (string.IsNullOrWhiteSpace(_options.ApiKey) || string.IsNullOrWhiteSpace(_options.BaseUrl) || string.IsNullOrWhiteSpace(_options.From))
         {
-            logger.LogWarning("Quo enabled but BaseUrl/ApiKey missing. ConsultationId={ConsultationId}", consultation.Id);
-            return new QuoMessageDispatchResult(false, null, null, "Quo configuration is missing BaseUrl or ApiKey.", endpoint, baseUrl);
+            logger.LogWarning("Quo enabled but BaseUrl/ApiKey/From missing. ConsultationId={ConsultationId}", consultation.Id);
+            return new QuoMessageDispatchResult(false, null, null, "Quo configuration is missing BaseUrl, ApiKey, or From.", endpoint, baseUrl);
         }
 
         var payload = new Dictionary<string, object?>
@@ -39,10 +39,7 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
             ["to"] = new[] { consultation.PhoneNumber }
         };
 
-        if (!string.IsNullOrWhiteSpace(_options.From))
-        {
-            payload["from"] = _options.From;
-        }
+        payload["from"] = _options.From!.Trim();
 
         if (!string.IsNullOrWhiteSpace(_options.UserId))
         {
