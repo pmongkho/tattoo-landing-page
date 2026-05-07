@@ -45,6 +45,33 @@
 					placeholder="📱  Phone"
 					formControlName="phoneNumber"
 				/>
+				<p
+					*ngIf="
+						form.get('phoneNumber')?.hasError('required') &&
+						(form.get('phoneNumber')?.dirty || form.get('phoneNumber')?.touched)
+					"
+					class="text-sm text-rose-700"
+				>
+					Phone number is required.
+				</p>
+				<p
+					*ngIf="
+						form.get('phoneNumber')?.hasError('phoneFormat') &&
+						(form.get('phoneNumber')?.dirty || form.get('phoneNumber')?.touched)
+					"
+					class="text-sm text-rose-700"
+				>
+					Enter a valid US phone number (10 digits, or 11 starting with 1).
+				</p>
+				<p
+					*ngIf="
+						form.get('phoneNumber')?.hasError('phoneFake') &&
+						(form.get('phoneNumber')?.dirty || form.get('phoneNumber')?.touched)
+					"
+					class="text-sm text-rose-700"
+				>
+					Please enter a real phone number.
+				</p>
 			</label>
 
 			<label class="flex items-start gap-3 text-lg">
