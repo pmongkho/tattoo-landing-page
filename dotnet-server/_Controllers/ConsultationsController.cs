@@ -45,4 +45,9 @@ public class ConsultationsController(
 
         return CreatedAtAction(nameof(Create), new { id = consultation.Id }, consultation);
     }
+
+    private static bool HasAtLeastTwoWords(string value)
+    {
+        return value.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Length >= 2;
+    }
 }
