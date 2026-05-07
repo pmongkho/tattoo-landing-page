@@ -25,21 +25,12 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
             return;
         }
         
-        if (string.IsNullOrWhiteSpace(_options.PhoneNumberId) || string.IsNullOrWhiteSpace(_options.UserId))
-        {
-            logger.LogWarning("Quo enabled but PhoneNumberId/UserId missing. ConsultationId={ConsultationId}", consultation.Id);
-            return;
-        }
-
         var endpoint = string.IsNullOrWhiteSpace(_options.SmsPath) ? "/v1/messages" : _options.SmsPath;
         var payload = new
         {
             content = BuildMessage(consultation),
             from = string.IsNullOrWhiteSpace(_options.From) ? null : _options.From,
-            to = new[] { consultation.PhoneNumber },
-            phoneNumberId = _options.PhoneNumberId,
-            userId = _options.UserId,
-            setInboxStatus = "done"
+            to = new[] { consultation.PhoneNumber }
         };
 
         using var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
