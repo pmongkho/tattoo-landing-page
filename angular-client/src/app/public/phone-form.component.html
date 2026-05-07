@@ -12,12 +12,30 @@
 
 		<form [formGroup]="form" (ngSubmit)="submit()" class="mt-8 space-y-6">
 			<label class="block space-y-2">
-				<span class="text-2xl font-medium">First Name</span>
+				<span class="text-2xl font-medium">Full Name</span>
 				<input
 					class="h-12 w-full rounded border border-slate-300 bg-white px-3 text-lg placeholder:text-slate-400 focus:outline-none"
-					placeholder="First Name"
+					placeholder="Full Name"
 					formControlName="name"
 				/>
+				<p
+					*ngIf="
+						form.get('name')?.hasError('required') &&
+						(form.get('name')?.dirty || form.get('name')?.touched)
+					"
+					class="text-sm text-rose-700"
+				>
+					Full name is required.
+				</p>
+				<p
+					*ngIf="
+						form.get('name')?.hasError('pattern') &&
+						(form.get('name')?.dirty || form.get('name')?.touched)
+					"
+					class="text-sm text-rose-700"
+				>
+					Enter first and last name.
+				</p>
 			</label>
 
 			<label class="block space-y-2">

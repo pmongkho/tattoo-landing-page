@@ -18,6 +18,12 @@ public class ConsultationsController(
     [HttpPost]
     public async Task<ActionResult<Consultation>> Create([FromBody] CreateConsultationRequest request, CancellationToken cancellationToken)
     {
+        var trimmedName = request.Name.Trim();
+        if (!HasAtLeastTwoWords(trimmedName))
+        {
+            return ValidationProblem(detail: "Please provide your first and last name.");
+        }
+
         if (!PhoneNumberNormalizer.TryNormalizeUsPhone(request.PhoneNumber, out var normalizedPhone))
         {
             return ValidationProblem(detail: "Please provide a valid US phone number.");
@@ -25,7 +31,7 @@ public class ConsultationsController(
 
         var consultation = new Consultation
         {
-            Name = request.Name.Trim(),
+            Name = trimmedName,
             PhoneNumber = normalizedPhone,
             Timeline = string.IsNullOrWhiteSpace(request.Timeline) ? "Not provided" : request.Timeline.Trim()
         };
