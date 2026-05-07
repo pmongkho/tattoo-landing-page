@@ -9,7 +9,16 @@ namespace dotnet_server._Integrations;
 public interface IQuoLeadMessagingClient
 {
     Task NotifyNewLeadAsync(Consultation consultation, CancellationToken cancellationToken);
+    Task<QuoMessageDispatchResult> SendNewLeadAsync(Consultation consultation, CancellationToken cancellationToken);
 }
+
+public record QuoMessageDispatchResult(
+    bool Sent,
+    int? StatusCode,
+    string? ResponseBody,
+    string? Error,
+    string Endpoint,
+    string? BaseUrl);
 
 public interface ISquareBookingClient
 {

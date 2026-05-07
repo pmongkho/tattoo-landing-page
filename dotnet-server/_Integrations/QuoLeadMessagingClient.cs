@@ -13,19 +13,26 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
 
     public async Task NotifyNewLeadAsync(Consultation consultation, CancellationToken cancellationToken)
     {
+        await SendNewLeadAsync(consultation, cancellationToken);
+    }
+
+    public async Task<QuoMessageDispatchResult> SendNewLeadAsync(Consultation consultation, CancellationToken cancellationToken)
+    {
+        var endpoint = NormalizeSmsPath(_options.SmsPath);
+        var baseUrl = httpClient.BaseAddress?.ToString() ?? _options.BaseUrl;
+
         if (!_options.Enabled)
         {
             logger.LogInformation("Quo notifications disabled. Skipping consultation {ConsultationId}.", consultation.Id);
-            return;
+            return new QuoMessageDispatchResult(false, null, null, "Quo notifications disabled.", endpoint, baseUrl);
         }
 
         if (string.IsNullOrWhiteSpace(_options.ApiKey) || string.IsNullOrWhiteSpace(_options.BaseUrl))
         {
             logger.LogWarning("Quo enabled but BaseUrl/ApiKey missing. ConsultationId={ConsultationId}", consultation.Id);
-            return;
+            return new QuoMessageDispatchResult(false, null, null, "Quo configuration is missing BaseUrl or ApiKey.", endpoint, baseUrl);
         }
-        
-        var endpoint = NormalizeSmsPath(_options.SmsPath);
+
         var payload = new Dictionary<string, object?>
         {
             ["content"] = BuildMessage(consultation),
@@ -53,21 +60,38 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
         try
         {
             using var response = await httpClient.SendAsync(request, cancellationToken);
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                var body = await response.Content.ReadAsStringAsync(cancellationToken);
                 logger.LogWarning("Quo SMS failed. Status={StatusCode} ConsultationId={ConsultationId} Body={Body}", (int)response.StatusCode, consultation.Id, body);
-                return;
+                return new QuoMessageDispatchResult(false, (int)response.StatusCode, body, null, endpoint, baseUrl);
             }
 
-            logger.LogInformation("Quo SMS sent for consultation {ConsultationId}.", consultation.Id);
+            logger.LogInformation("Quo SMS sent for consultation {ConsultationId}. Status={StatusCode} Body={Body}", consultation.Id, (int)response.StatusCode, body);
+            return new QuoMessageDispatchResult(true, (int)response.StatusCode, body, null, endpoint, baseUrl);
         }
         catch (HttpRequestException ex) when (ex.InnerException is AuthenticationException)
         {
+            var error = BuildDetailedError(ex);
             logger.LogWarning(ex,
                 "Quo SMS TLS handshake failed for consultation {ConsultationId}. Verify QuoApi:BaseUrl uses a TLS 1.2+ HTTPS endpoint.",
                 consultation.Id);
+
+            return new QuoMessageDispatchResult(false, null, null, error, endpoint, baseUrl);
         }
+        catch (HttpRequestException ex)
+        {
+            var error = BuildDetailedError(ex);
+            logger.LogWarning(ex, "Quo SMS request failed for consultation {ConsultationId}.", consultation.Id);
+            return new QuoMessageDispatchResult(false, null, null, error, endpoint, baseUrl);
+        }
+    }
+
+    private static string BuildDetailedError(HttpRequestException ex)
+    {
+        return ex.InnerException is null
+            ? ex.Message
+            : $"{ex.Message} | Inner: {ex.InnerException.GetType().Name}: {ex.InnerException.Message}";
     }
 
     private string BuildMessage(Consultation consultation)
