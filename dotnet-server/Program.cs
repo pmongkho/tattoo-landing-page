@@ -1,4 +1,3 @@
-using System.Security.Authentication;
 using dotnet_server._Data;
 using dotnet_server._Integrations;
 using Microsoft.EntityFrameworkCore;
@@ -20,13 +19,6 @@ builder.Services.AddHttpClient<IQuoLeadMessagingClient, QuoLeadMessagingClient>(
     if (!string.IsNullOrWhiteSpace(quoOptions.BaseUrl))
     {
         client.BaseAddress = new Uri(quoOptions.BaseUrl);
-    }
-})
-.ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
-{
-    SslOptions =
-    {
-        EnabledSslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13
     }
 });
 builder.Services.AddHttpClient<ISquareBookingClient, SquareBookingPlaceholder>((sp, client) =>
