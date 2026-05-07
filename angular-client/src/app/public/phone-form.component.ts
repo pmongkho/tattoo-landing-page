@@ -17,7 +17,7 @@ export class PhoneFormComponent {
 
   form = this.fb.group({
     name: ['', [Validators.required]],
-    phoneNumber: ['', [Validators.required]],
+    phoneNumber: ['', [Validators.required, Validators.pattern(/^\+?1?[\s.-]?(?:\([2-9]\d{2}\)|[2-9]\d{2})[\s.-]?\d{3}[\s.-]?\d{4}$/)]],
     smsConsent: [false, [Validators.requiredTrue]]
   });
 

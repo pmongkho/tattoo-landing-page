@@ -2,6 +2,7 @@ using dotnet_server._Data;
 using dotnet_server._Dtos;
 using dotnet_server._Integrations;
 using dotnet_server._Models;
+using dotnet_server._Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_server._Controllers;
@@ -17,10 +18,15 @@ public class ConsultationsController(
     [HttpPost]
     public async Task<ActionResult<Consultation>> Create([FromBody] CreateConsultationRequest request, CancellationToken cancellationToken)
     {
+        if (!PhoneNumberNormalizer.TryNormalizeUsPhone(request.PhoneNumber, out var normalizedPhone))
+        {
+            return ValidationProblem(detail: "Please provide a valid US phone number.");
+        }
+
         var consultation = new Consultation
         {
-            Name = request.Name,
-            PhoneNumber = request.PhoneNumber,
+            Name = request.Name.Trim(),
+            PhoneNumber = normalizedPhone,
             Timeline = string.IsNullOrWhiteSpace(request.Timeline) ? "Not provided" : request.Timeline.Trim()
         };
 
