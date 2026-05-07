@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using dotnet_server._Models;
+using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
 
 namespace dotnet_server._Integrations;
@@ -46,7 +47,15 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
             Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
         };
 
-        request.Headers.TryAddWithoutValidation("Authorization", _options.ApiKey);
+        var trimmedApiKey = _options.ApiKey.Trim();
+        if (trimmedApiKey.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+        {
+            request.Headers.TryAddWithoutValidation("Authorization", trimmedApiKey);
+        }
+        else
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", trimmedApiKey);
+        }
 
         using var response = await httpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
