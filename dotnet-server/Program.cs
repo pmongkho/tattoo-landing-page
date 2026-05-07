@@ -18,7 +18,7 @@ builder.Services.AddHttpClient<IQuoLeadMessagingClient, QuoLeadMessagingClient>(
     var quoOptions = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<QuoApiOptions>>().Value;
     if (!string.IsNullOrWhiteSpace(quoOptions.BaseUrl))
     {
-        client.BaseAddress = new Uri(quoOptions.BaseUrl);
+        client.BaseAddress = new Uri($"{quoOptions.BaseUrl.TrimEnd('/')}/");
     }
 });
 builder.Services.AddHttpClient<ISquareBookingClient, SquareBookingPlaceholder>((sp, client) =>
