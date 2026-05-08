@@ -1,6 +1,110 @@
 @dotnet_server_HostAddress = http://localhost:5264
 
+### Health check
 GET {{dotnet_server_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+### 1) Create consultation (normal path)
+# Expectation:
+# - 201 Created from this API.
+# - Server attempts Quo + Square customer sync.
+# - To verify Square customer creation, check backend logs for:
+#   "Square customer created for consultation {ConsultationId}."
+POST {{dotnet_server_HostAddress}}/api/consultations
+Content-Type: application/json
+
+{
+  "name": "Jane Tester",
+  "phoneNumber": "(702) 555-1188",
+  "timeline": "2-4 weeks"
+}
+
+###
+### 2) Create consultation (same phone again)
+# Expectation today:
+# - API still returns 201 and attempts Square sync again.
+# - If you want true "do nothing when customer already exists", this endpoint
+#   needs dedupe logic in ISquareCustomerClient before posting /v2/customers.
+POST {{dotnet_server_HostAddress}}/api/consultations
+Content-Type: application/json
+
+{
+  "name": "Jane Tester",
+  "phoneNumber": "+1 702-555-1188",
+  "timeline": "flexible"
+}
+
+###
+### 3) Validation test (bad name)
+POST {{dotnet_server_HostAddress}}/api/consultations
+Content-Type: application/json
+
+{
+  "name": "Jane",
+  "phoneNumber": "7025551188",
+  "timeline": "next month"
+}
+
+###
+### 4) Validation test (bad phone)
+POST {{dotnet_server_HostAddress}}/api/consultations
+Content-Type: application/json
+
+{
+  "name": "Jane Tester",
+  "phoneNumber": "123",
+  "timeline": "next month"
+}
+
+###
+### 5) Square webhook: booking.created (deposit flow)
+# IMPORTANT:
+# - Replace {{square_signature}} with a valid HMAC SHA256 base64 signature of:
+#     WebhookNotificationUrl + raw request body
+# - Header name must be: x-square-hmacsha256-signature
+@event_id_booking_created = test-booking-created-001
+@square_signature = REPLACE_ME
+POST {{dotnet_server_HostAddress}}/api/square/webhooks
+x-square-hmacsha256-signature: {{square_signature}}
+Content-Type: application/json
+
+{
+  "event_id": "{{event_id_booking_created}}",
+  "type": "booking.created",
+  "data": {
+    "id": "booking-created-test"
+  }
+}
+
+###
+### 6) Square webhook duplicate event_id (idempotency)
+# Expectation:
+# - Returns 200.
+# - Event should be ignored after first insert (no duplicate processing).
+POST {{dotnet_server_HostAddress}}/api/square/webhooks
+x-square-hmacsha256-signature: {{square_signature}}
+Content-Type: application/json
+
+{
+  "event_id": "{{event_id_booking_created}}",
+  "type": "booking.created",
+  "data": {
+    "id": "booking-created-test"
+  }
+}
+
+###
+### 7) Square webhook: invoice.payment_made
+@event_id_payment = test-invoice-payment-001
+POST {{dotnet_server_HostAddress}}/api/square/webhooks
+x-square-hmacsha256-signature: {{square_signature}}
+Content-Type: application/json
+
+{
+  "event_id": "{{event_id_payment}}",
+  "type": "invoice.payment_made",
+  "data": {
+    "id": "invoice-payment-test"
+  }
+}

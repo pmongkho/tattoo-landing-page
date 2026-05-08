@@ -112,3 +112,108 @@ You can also set `DATABASE_URL` instead; the EF design-time factory supports bot
 - `appsettings.json` keeps an empty placeholder for `DefaultConnection`.
 - Public registration endpoint is not exposed.
 - Only users already in the `Admin` role can log in successfully.
+
+## Endpoint testing cheatsheet
+
+Use `dotnet-server/dotnet-server.http` with VS Code REST Client or Rider HTTP Client to run ready-made scenarios for:
+
+- Consultation creation.
+- Re-submitting the same client data.
+- Validation failures.
+- Square webhook deposit events and duplicate event idempotency checks.
+
+Before webhook tests, set these backend variables so signature validation succeeds:
+
+```bash
+export Square__WebhookSignatureKey="<your-square-webhook-signature-key>"
+export Square__WebhookNotificationUrl="<the-exact-webhook-url-configured-in-square>"
+```
+
+Then generate the `x-square-hmacsha256-signature` for each raw JSON payload as:
+
+`base64(hmac_sha256(WebhookNotificationUrl + rawBody, WebhookSignatureKey))`
+
+
+## Swagger endpoint quick tests
+
+When the backend runs in Development, open Swagger UI (usually `http://localhost:5264/swagger`) and use these endpoints.
+
+### 1) Create consultation
+
+- **Method/Path:** `POST /api/consultations`
+- **Swagger body:**
+
+```json
+{
+  "name": "Jane Tester",
+  "phoneNumber": "(702) 555-1188",
+  "timeline": "2-4 weeks"
+}
+```
+
+Expected: `201 Created` with the saved consultation payload.
+
+### 2) Duplicate consultation submission (same person)
+
+- **Method/Path:** `POST /api/consultations`
+- **Swagger body:**
+
+```json
+{
+  "name": "Jane Tester",
+  "phoneNumber": "+1 702-555-1188",
+  "timeline": "flexible"
+}
+```
+
+Expected (current behavior): another `201 Created` and another Square sync attempt.
+
+### 3) Validation check (bad full name)
+
+- **Method/Path:** `POST /api/consultations`
+- **Swagger body:**
+
+```json
+{
+  "name": "Jane",
+  "phoneNumber": "7025551188",
+  "timeline": "next month"
+}
+```
+
+Expected: `400` validation error (`Please provide your first and last name.`).
+
+### 4) Validation check (bad phone)
+
+- **Method/Path:** `POST /api/consultations`
+- **Swagger body:**
+
+```json
+{
+  "name": "Jane Tester",
+  "phoneNumber": "123",
+  "timeline": "next month"
+}
+```
+
+Expected: `400` validation error (`Please provide a valid US phone number.`).
+
+### 5) Square webhook tests from Swagger
+
+You can run `POST /api/square/webhooks` in Swagger too, but add header:
+
+- `x-square-hmacsha256-signature: <valid signature>`
+
+and send a body like:
+
+```json
+{
+  "event_id": "test-booking-created-001",
+  "type": "booking.created",
+  "data": {
+    "id": "booking-created-test"
+  }
+}
+```
+
+Use a new `event_id` for each first-time test, and re-send the same `event_id` to verify duplicate-event idempotency.
