@@ -1,18 +1,19 @@
 using dotnet_server._Data;
+using dotnet_server._HostedServices;
 using dotnet_server._Integrations;
+using dotnet_server._Services;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 const string CorsPolicy = "TattooFrontend";
 
-builder.Services.AddDbContext<AppDbContext>(options => 
+builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.Configure<QuoApiOptions>(builder.Configuration.GetSection(QuoApiOptions.SectionName));
-builder.Services.Configure<SquareApiOptions>(builder.Configuration.GetSection(SquareApiOptions.SectionName));
+builder.Services.Configure<SquareOptions>(builder.Configuration.GetSection(SquareOptions.SectionName));
 builder.Services.AddHttpClient<IQuoLeadMessagingClient, QuoLeadMessagingClient>((sp, client) =>
 {
     var quoOptions = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<QuoApiOptions>>().Value;
@@ -21,14 +22,19 @@ builder.Services.AddHttpClient<IQuoLeadMessagingClient, QuoLeadMessagingClient>(
         client.BaseAddress = new Uri($"{quoOptions.BaseUrl.TrimEnd('/')}/");
     }
 });
-builder.Services.AddHttpClient<ISquareBookingClient, SquareBookingPlaceholder>((sp, client) =>
+builder.Services.AddHttpClient("SquareApi", (sp, client) =>
 {
-    var squareOptions = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<SquareApiOptions>>().Value;
-    if (!string.IsNullOrWhiteSpace(squareOptions.BaseUrl))
-    {
-        client.BaseAddress = new Uri(squareOptions.BaseUrl);
-    }
+    var squareOptions = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<SquareOptions>>().Value;
+    client.BaseAddress = new Uri(squareOptions.BaseUrl);
 });
+builder.Services.AddHttpClient<ISquareCustomerClient, SquareCustomerClient>((sp, client) =>
+{
+    var squareOptions = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<SquareOptions>>().Value;
+    client.BaseAddress = new Uri(squareOptions.BaseUrl);
+});
+
+builder.Services.AddScoped<ISquareDepositService, SquareDepositService>();
+builder.Services.AddHostedService<SquareDepositBackgroundService>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -72,9 +78,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors(CorsPolicy);
-
 app.MapControllers();
-
 
 app.MapGet("/health/db", async (AppDbContext dbContext) =>
 {
@@ -91,7 +95,4 @@ app.MapGet("/health/db", async (AppDbContext dbContext) =>
     }
 });
 
-
-
 app.Run();
-

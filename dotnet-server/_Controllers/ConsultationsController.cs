@@ -12,7 +12,7 @@ namespace dotnet_server._Controllers;
 public class ConsultationsController(
     AppDbContext dbContext,
     IQuoLeadMessagingClient quoLeadMessagingClient,
-    ISquareBookingClient squareBookingClient,
+    ISquareCustomerClient squareCustomerClient,
     ILogger<ConsultationsController> logger) : ControllerBase
 {
     [HttpPost]
@@ -42,11 +42,11 @@ public class ConsultationsController(
         try
         {
             await quoLeadMessagingClient.NotifyNewLeadAsync(consultation, cancellationToken);
-            await squareBookingClient.PrepareBookingWorkflowAsync(consultation, cancellationToken);
+            await squareCustomerClient.CreateCustomerFromConsultationAsync(consultation, cancellationToken);
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Placeholder integration step failed for consultation {ConsultationId}", consultation.Id);
+            logger.LogWarning(ex, "Square/Quo integration step failed for consultation {ConsultationId}", consultation.Id);
         }
 
         return CreatedAtAction(nameof(Create), new { id = consultation.Id }, consultation);
