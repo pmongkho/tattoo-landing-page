@@ -100,7 +100,7 @@ public class QuoLeadMessagingClient(HttpClient httpClient, ILogger<QuoLeadMessag
                 .Replace("{timeline}", consultation.Timeline, StringComparison.OrdinalIgnoreCase);
         }
 
-        return "Hey! I'm one of Wo Hu's booking managers, thanks for reaching out!\n\nWhat were you interested in getting done? :)";
+        return $"Hey {consultation.Name}! I'm one of Wo Hu's booking managers. Thanks for reaching out!\n\nPlease send over any reference pictures you have and let me know where on your body you'd like the tattoo, and we can get started.";
     }
 
     private static string NormalizeSmsPath(string? smsPath)
