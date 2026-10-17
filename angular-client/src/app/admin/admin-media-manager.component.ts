@@ -1,3 +1,4 @@
+import { ApiService, InstagramAdminItem } from '../core/api.service';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +10,49 @@ import { MediaSettings, MediaSettingsService, PortfolioItem } from '../core/medi
   templateUrl: './admin-media-manager.component.html'
 })
 export class AdminMediaManagerComponent {
+  instagramKey = '';
+  instagramItems: InstagramAdminItem[] = [];
+  instagramMessage = '';
+  instagramBusy = false;
+  instagramConfigured = false;
+
+  loadInstagram(): void {
+    this.instagramBusy = true;
+    this.instagramMessage = '';
+    this.api.getInstagramMedia(this.instagramKey).subscribe({
+      next: result => {
+        this.instagramItems = result.items;
+        this.instagramConfigured = result.configured;
+        this.instagramMessage = result.configured ? 'Connected. Choose which posts to show.' : 'Set Instagram__AccessToken on your backend and restart it.';
+        this.instagramBusy = false;
+      },
+      error: error => this.instagramError(error)
+    });
+  }
+
+  syncInstagram(): void {
+    this.instagramBusy = true;
+    this.api.syncInstagram(this.instagramKey).subscribe({
+      next: () => this.loadInstagram(),
+      error: error => this.instagramError(error)
+    });
+  }
+
+  saveInstagram(item: InstagramAdminItem): void {
+    this.instagramBusy = true;
+    this.api.updateInstagramMedia(this.instagramKey, item).subscribe({
+      next: () => { this.instagramBusy = false; this.instagramMessage = 'Saved for all visitors. Refresh the gallery to see changes.'; },
+      error: error => this.instagramError(error)
+    });
+  }
+
+  private instagramError(error: { status: number; error?: { detail?: string } }): void {
+    this.instagramBusy = false;
+    this.instagramMessage = error.status === 401
+      ? 'Enter your media admin key. It must match Instagram__AdminKey on the backend (at least 32 characters).'
+      : error.error?.detail || 'Request failed. Check the backend connection and database migrations.';
+  }
+
   sasUrl = '';
   selectedFile: File | null = null;
   uploadMessage = '';
@@ -17,7 +61,7 @@ export class AdminMediaManagerComponent {
 
   draft: MediaSettings;
 
-  constructor(private mediaSettings: MediaSettingsService) {
+  constructor(private mediaSettings: MediaSettingsService, private api: ApiService) {
     this.draft = this.mediaSettings.get() ?? {
       profileImageUrl: '',
       avatarImageUrl: '',

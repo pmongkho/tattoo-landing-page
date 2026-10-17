@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 
 export type PortfolioItem = {
+  id?: string;
+  mediaUrl?: string;
+  mediaType?: string;
+  permalink?: string;
+  pinned?: boolean;
   imageUrl: string;
   title: string;
   caption: string;
