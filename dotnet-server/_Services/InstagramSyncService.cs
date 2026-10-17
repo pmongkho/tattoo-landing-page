@@ -29,6 +29,7 @@ public class InstagramSyncService(AppDbContext db, InstagramClient instagram)
                 saved.Caption = item.Caption;
                 saved.Permalink = item.Permalink;
                 saved.MediaType = item.MediaType;
+                saved.IsReel = item.IsReel;
                 saved.PublishedAt = item.PublishedAt;
                 saved.SyncedAt = DateTimeOffset.UtcNow;
                 // Preserve website visibility, pinning, and order across syncs.

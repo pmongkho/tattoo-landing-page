@@ -21,9 +21,9 @@ export class AdminMediaManagerComponent {
     this.instagramMessage = '';
     this.api.getInstagramMedia(this.instagramKey).subscribe({
       next: result => {
-        this.instagramItems = result.items;
+        this.instagramItems = result.items.filter(item => item.isReel);
         this.instagramConfigured = result.configured;
-        this.instagramMessage = result.configured ? 'Connected. Choose which posts to show.' : 'Set Instagram__AccessToken on your backend and restart it.';
+        this.instagramMessage = result.configured ? 'Connected. Choose which Reels to show.' : 'Set Instagram__AccessToken on your backend and restart it.';
         this.instagramBusy = false;
       },
       error: error => this.instagramError(error)

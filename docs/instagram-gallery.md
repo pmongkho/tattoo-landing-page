@@ -1,6 +1,6 @@
 # Instagram gallery setup
 
-The website keeps its existing swipe gallery. Instagram photos, carousel children, and Reels populate the same cards. Reels have native video controls. Website pins appear first; lower display-order numbers come first within pinned/unpinned groups, followed by newest posts. These pins are independent of Instagram profile pinning.
+The homepage displays your **10 newest visible Instagram Reels** in a responsive portrait video grid with native playback controls. There is no swipe gallery or photo fallback. Photo posts and videos inside carousels are excluded. Pinning and custom order do not affect this chronological feed. If fewer than 10 visible Reels are available in the synced window, all available Reels are shown.
 
 ## Where to paste your token
 
@@ -46,21 +46,21 @@ dotnet build dotnet-server/dotnet-server.csproj --artifacts-path /workspace/.set
 dotnet ef database update --project dotnet-server --no-build --msbuildprojectextensionspath /workspace/.setup-tools/artifacts/obj/dotnet-server
 ```
 
-## Choose and pin posts
+## Choose visible Reels
 
 1. Open your website's `/admin/media` page.
 2. Under **Instagram Gallery**, enter `Instagram__AdminKey` in **Media admin key**. This key stays in component memory; it is not saved to browser storage.
-3. Click **Sync Instagram now**, then use **Visible**, **Pinned**, and **Order**, and click **Save post** for each edited post.
+3. Click **Sync Instagram now**, then use **Visible**, and click **Save post** for each edited Reel.
 4. Refresh the landing page. Changes are stored in PostgreSQL and shared by all visitors.
 
-New posts default to visible. To unpublish a synced post, clear Visible. Sync preserves visibility, pins, and ordering. A successful sync refreshes captions and temporary media URLs. The background worker runs at startup and every 30 minutes by default. Manual sync is available through the protected dashboard.
+New posts default to visible. After deploying the Reel-classification migration, run **Sync Instagram now** once to classify previously saved media; existing rows initially default to non-Reels. To unpublish a synced post, clear Visible. Sync preserves visibility, pins, and ordering. A successful sync refreshes captions and temporary media URLs. The background worker runs at startup and every 30 minutes by default. Manual sync is available through the protected dashboard.
 
 ## Reliability and limitations
 
 - Long-lived tokens expire (typically around 60 days). Refresh them through Meta's documented `refresh_access_token` flow while still valid, update `Instagram__AccessToken`, and restart/redeploy the backend. Automatic credential renewal is not implemented. Do not use an expiring short-lived test token for production.
 - Sync fetches up to 500 recent parent posts. Keep your curated gallery within that recent window; older cached URLs may expire. Carousel children returned by Meta are displayed as individual cards.
 - Saved posts are retained if upstream requests fail. They are not automatically removed when deleted from Instagram or when they fall outside the fetched window: hide them in the dashboard. Cached remote media can still fail if its URL expires before the next successful sync.
-- The original hardcoded/browser-local gallery is a fallback before Instagram is configured or when the portfolio API cannot be reached. Hiding all synced posts intentionally produces an empty Instagram gallery.
+- The homepage shows a loading state, an empty state, or an error state with a link to Instagram when appropriate. It does not substitute hardcoded photos.
 - Allow backend HTTPS access to `graph.instagram.com`; viewers' browsers also need access to Instagram's media CDN. Google Fonts networking is separate.
-- `GET /api/portfolio` is public and returns visible media only. Management reads, updates, and sync require `X-Media-Admin-Key`. Tokens and the management key are never returned by these endpoints.
+- `GET /api/portfolio/reels` is public and returns at most 10 visible Reels, ordered by publication date descending. The older `GET /api/portfolio` remains available for compatibility. Management reads, updates, and sync require `X-Media-Admin-Key`. Tokens and the management key are never returned by these endpoints.
 - This setup does not replace the hero video or avatar automatically.

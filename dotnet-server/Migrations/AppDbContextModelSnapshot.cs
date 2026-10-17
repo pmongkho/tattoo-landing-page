@@ -69,6 +69,9 @@ namespace dotnet_server.Migrations
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsReel")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("MediaType")
                         .IsRequired()
                         .HasColumnType("text");

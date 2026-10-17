@@ -10,6 +10,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
+  getInstagramReels() { return this.http.get<PortfolioItem[]>(`${this.api}/portfolio/reels`); }
   getPortfolio() { return this.http.get<{ enabled: boolean; items: PortfolioItem[] }>(`${this.api}/portfolio`); }
   getInstagramMedia(key: string) {
     return this.http.get<{ configured: boolean; items: InstagramAdminItem[] }>(`${this.api}/portfolio/manage`, { headers: { 'X-Media-Admin-Key': key } });
@@ -38,6 +39,7 @@ export class ApiService {
 }
 
 export interface InstagramAdminItem {
+  isReel: boolean;
   id: string;
   mediaUrl: string;
   thumbnailUrl?: string;
