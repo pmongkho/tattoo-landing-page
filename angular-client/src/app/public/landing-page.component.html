@@ -159,35 +159,25 @@
 		</div>
 	</section>
 
-	<section
-		id="portfolio"
-		class="flex min-h-screen flex-col justify-center px-4 py-10"
-	>
-		<h3 class="text-center text-5xl tracking-[0.08em]">THE WORK</h3>
-		<div class="mx-auto mt-2 h-[2px] w-24 bg-[#2f2f2f]"></div>
-		<p
-			class="mt-8 text-center text-xl uppercase tracking-[0.12em] text-slate-600"
-			>Swipe to explore</p
-		>
-		<div class="mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3">
-			<article
-				*ngFor="let item of portfolio"
-				class="relative min-w-full snap-center border border-slate-300 bg-white p-3"
-			>
-                <span *ngIf="item.pinned" class="absolute right-5 top-5 z-10 rounded-full bg-white/90 px-2 py-1 text-sm" aria-label="Pinned work">📌</span>
-                <video *ngIf="item.mediaType === 'VIDEO'; else portfolioImage"
-                    [src]="item.mediaUrl" [poster]="item.imageUrl" controls playsinline preload="none"
-                    class="h-[65vh] w-full object-cover" [attr.aria-label]="item.title"></video>
-                <ng-template #portfolioImage>
-                    <img [src]="item.imageUrl" [alt]="item.title"
-                        class="h-[65vh] w-full object-cover" loading="lazy"
-                        (error)="$any($event.target).src='assets/images/logo.jpeg'" />
-                </ng-template>
-                <a *ngIf="item.permalink" [href]="item.permalink" target="_blank" rel="noopener noreferrer"
-                    class="mt-2 inline-block text-sm underline">View on Instagram</a>
-			</article>
-		</div>
-	</section>
+    <section id="portfolio" class="px-4 py-16" aria-labelledby="reels-heading">
+        <h3 id="reels-heading" class="text-center text-4xl tracking-[0.08em] sm:text-5xl">LATEST REELS</h3>
+        <div class="mx-auto mt-2 h-[2px] w-24 bg-[#2f2f2f]"></div>
+        <p class="mt-6 text-center text-slate-600">Fresh work from &#64;wohu.tattoo</p>
+        <p *ngIf="reelsLoading" role="status" class="mt-8 text-center">Loading Reels…</p>
+        <div *ngIf="!reelsLoading && !reels.length" class="mt-8 text-center">
+            <p>{{ reelsUnavailable ? 'Reels are temporarily unavailable.' : 'New Reels are coming soon.' }}</p>
+            <a href="https://www.instagram.com/wohu.tattoo/reels/" target="_blank" rel="noopener noreferrer"
+                class="mt-3 inline-block underline">Watch on Instagram</a>
+        </div>
+        <div class="mx-auto mt-8 grid max-w-6xl grid-cols-1 gap-5 min-[400px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <article *ngFor="let reel of reels" class="min-w-0 overflow-hidden border border-slate-300 bg-white p-2">
+                <video [src]="reel.mediaUrl" [poster]="reel.imageUrl || ''" controls playsinline preload="none"
+                    class="aspect-[9/16] w-full bg-black object-contain" [attr.aria-label]="reel.title"></video>
+                <a *ngIf="reel.permalink" [href]="reel.permalink" target="_blank" rel="noopener noreferrer"
+                    class="mt-2 inline-block px-1 pb-1 text-sm underline">Watch on Instagram</a>
+            </article>
+        </div>
+    </section>
 
 	<footer
 		id="contact"

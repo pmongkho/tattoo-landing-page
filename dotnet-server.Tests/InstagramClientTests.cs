@@ -12,7 +12,7 @@ public class InstagramClientTests
         var handler = new Handler("""
         {"data":[
           {"id":"photo","media_type":"IMAGE","media_url":"https://cdn.example/photo.jpg","caption":"Healed tattoo","permalink":"https://www.instagram.com/p/photo/","timestamp":"2026-10-01T12:00:00+0000"},
-          {"id":"reel","media_type":"VIDEO","media_url":"https://cdn.example/reel.mp4","thumbnail_url":"https://cdn.example/reel.jpg","timestamp":"2026-10-02T12:00:00+0000"},
+          {"id":"reel","media_type":"VIDEO","media_product_type":"REELS","media_url":"https://cdn.example/reel.mp4","thumbnail_url":"https://cdn.example/reel.jpg","timestamp":"2026-10-02T12:00:00+0000"},
           {"id":"album","media_type":"CAROUSEL_ALBUM","caption":"Two pieces","permalink":"https://www.instagram.com/p/album/","timestamp":"2026-10-03T12:00:00+0000","children":{"data":[
             {"id":"child1","media_type":"IMAGE","media_url":"https://cdn.example/1.jpg"},
             {"id":"child2","media_type":"VIDEO","media_url":"https://cdn.example/2.mp4","thumbnail_url":"https://cdn.example/2.jpg"}]}}
@@ -22,6 +22,8 @@ public class InstagramClientTests
         Assert.Equal(4, items.Count);
         Assert.Equal("Healed tattoo", items[0].Caption);
         Assert.Equal("VIDEO", items[1].MediaType);
+        Assert.True(items[1].IsReel);
+        Assert.False(items[3].IsReel);
         Assert.Equal("https://cdn.example/reel.jpg", items[1].ThumbnailUrl);
         Assert.Equal("child1", items[2].Id);
         Assert.Equal("Two pieces", items[2].Caption);

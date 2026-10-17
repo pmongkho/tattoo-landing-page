@@ -25,6 +25,18 @@ public class InstagramController(AppDbContext db, IOptions<InstagramOptions> opt
         return Ok(new { enabled = !string.IsNullOrWhiteSpace(options.Value.AccessToken) || await db.InstagramMedia.AnyAsync(ct), items });
     }
 
+    [HttpGet("reels")]
+    public async Task<IActionResult> Reels(CancellationToken ct)
+    {
+        var items = await db.InstagramMedia.AsNoTracking()
+            .Where(x => x.Visible && x.IsReel && x.MediaType == "VIDEO")
+            .OrderByDescending(x => x.PublishedAt).ThenBy(x => x.Id).Take(10)
+            .Select(x => new { x.Id, imageUrl = x.ThumbnailUrl, x.MediaUrl,
+                title = x.Caption == "" ? "Reel by Wo Hu" : x.Caption, x.Permalink })
+            .ToListAsync(ct);
+        return Ok(items);
+    }
+
     [HttpGet("manage")]
     public async Task<IActionResult> Manage(CancellationToken ct)
     {

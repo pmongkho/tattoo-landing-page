@@ -2,8 +2,8 @@
       <h1 class="text-2xl">Media Dashboard</h1>
 
       <section class="bg-zinc-900 p-4 rounded space-y-4">
-        <h2 class="text-xl">Instagram Gallery</h2>
-        <p class="text-sm">Manage the Instagram photos and Reels shown in your existing gallery. Pinned work appears first; lower order numbers appear earlier.</p>
+        <h2 class="text-xl">Instagram Reels</h2>
+        <p class="text-sm">Your 10 newest visible Reels appear on the homepage, newest first. Photos and carousel videos are excluded.</p>
         <label class="block">Media admin key
           <input type="password" [(ngModel)]="instagramKey" autocomplete="off" placeholder="Your media admin key"
             class="block w-full p-2 bg-black border border-zinc-700" />
@@ -16,8 +16,6 @@
           <img *ngIf="item.thumbnailUrl || item.mediaType !== 'VIDEO'" [src]="item.thumbnailUrl || item.mediaUrl" [alt]="item.caption || 'Instagram media'" class="h-32 w-32 object-cover" loading="lazy" />
           <p class="truncate">{{ item.caption || 'Instagram post' }}</p>
           <label class="mr-4"><input type="checkbox" [(ngModel)]="item.visible" /> Visible</label>
-          <label class="mr-4"><input type="checkbox" [(ngModel)]="item.pinned" /> 📌 Pinned</label>
-          <label>Order <input type="number" [(ngModel)]="item.displayOrder" class="w-20 p-1 bg-black border border-zinc-700" /></label>
           <button (click)="saveInstagram(item)" [disabled]="instagramBusy" class="ml-4 underline">Save post</button>
         </div>
       </section>
@@ -41,7 +39,7 @@
 
       <div class="bg-zinc-900 p-4 rounded space-y-4">
         <h2 class="text-xl">Local fallback images</h2>
-        <p class="text-sm">These browser-only settings are used before Instagram is connected or when the API cannot be reached.</p>
+        <p class="text-sm">Legacy browser-only photo settings. The homepage now displays synced Instagram Reels instead.</p>
         <div *ngFor="let item of draft.portfolio; let i = index" class="grid md:grid-cols-3 gap-2 border border-zinc-700 p-3">
           <input [(ngModel)]="item.imageUrl" placeholder="Image URL" class="p-2 bg-black border border-zinc-700" />
           <input [(ngModel)]="item.title" placeholder="Title" class="p-2 bg-black border border-zinc-700" />

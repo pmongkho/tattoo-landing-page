@@ -27,7 +27,7 @@ public class InstagramClient(HttpClient http, IOptions<InstagramOptions> options
         // Bounded pagination: synchronize up to 500 recent posts. Never follow a remote next URL.
         for (var page = 0; page < 5; page++)
         {
-            var path = $"{version}/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,children{{id,media_type,media_url,thumbnail_url}}&limit=100";
+            var path = $"{version}/me/media?fields=id,caption,media_type,media_product_type,media_url,thumbnail_url,permalink,timestamp,children{{id,media_type,media_url,thumbnail_url}}&limit=100";
             if (after is not null) path += "&after=" + Uri.EscapeDataString(after);
             using var request = new HttpRequestMessage(HttpMethod.Get, path);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", options.Value.AccessToken);
@@ -44,7 +44,7 @@ public class InstagramClient(HttpClient http, IOptions<InstagramOptions> options
                 if (Text(post, "media_type") == "CAROUSEL_ALBUM" && post.TryGetProperty("children", out var children))
                     foreach (var child in children.GetProperty("data").EnumerateArray())
                         Add(child, caption, permalink, published);
-                else Add(post, caption, permalink, published);
+                else Add(post, caption, permalink, published, Text(post, "media_product_type") == "REELS");
             }
             after = null;
             if (json.RootElement.TryGetProperty("paging", out var paging) && paging.TryGetProperty("next", out _) &&
@@ -54,7 +54,7 @@ public class InstagramClient(HttpClient http, IOptions<InstagramOptions> options
         }
         return result;
 
-        void Add(JsonElement media, string caption, string permalink, DateTimeOffset published)
+        void Add(JsonElement media, string caption, string permalink, DateTimeOffset published, bool isReel = false)
         {
             var url = Text(media, "media_url");
             var id = Text(media, "id");
@@ -62,7 +62,7 @@ public class InstagramClient(HttpClient http, IOptions<InstagramOptions> options
             var thumbnail = Text(media, "thumbnail_url");
             result.Add(new InstagramMedia { Id = id, MediaUrl = url,
                 ThumbnailUrl = IsHttps(thumbnail) ? thumbnail : null,
-                MediaType = Text(media, "media_type"), Caption = caption,
+                IsReel = isReel, MediaType = Text(media, "media_type"), Caption = caption,
                 Permalink = IsHttps(permalink) ? permalink : "", PublishedAt = published });
         }
     }
