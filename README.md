@@ -64,6 +64,27 @@ Default dev API base URL is configured in `src/environments/environment.ts`.
 
 ## Environment variables
 
+### Quo contact and message flow
+
+After a consultation is saved, the Quo integration searches the contact list (including all pages)
+for the submitted full name and phone number. Name matching ignores case and extra whitespace;
+phone matching uses the normalized US number. A matching contact is reused. Otherwise, a contact
+is created with the submitted name and phone before the existing lead message is sent to that number.
+Contacts with only a matching name or only a matching number are not treated as the same person.
+
+The existing `QuoApi` configuration must enable the integration and supply `BaseUrl`, `ApiKey`,
+and `From`. The API key needs contact read/create and message permissions. Contact requests use
+the same API version prefix as `SmsPath`. A failed contact lookup or creation prevents messaging;
+it does not undo the saved consultation. A later form submission sends another message to the
+existing contact. Lookup/create is serialized within one server process; separate server instances
+can still race to create a contact.
+
+Run the mocked integration tests without contacting Quo:
+
+```bash
+dotnet test dotnet-server.Tests/dotnet-server.Tests.csproj --artifacts-path /tmp/tattoo-test-artifacts
+```
+
 No connection string is committed to appsettings files.
 
 ### Backend required (production)
