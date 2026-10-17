@@ -11,9 +11,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<BookingDeposit> BookingDeposits => Set<BookingDeposit>();
     public DbSet<SquareWebhookEvent> SquareWebhookEvents => Set<SquareWebhookEvent>();
 
+    public DbSet<InstagramMedia> InstagramMedia => Set<InstagramMedia>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Entity<InstagramMedia>().Property(x => x.Id).HasMaxLength(100);
 
         builder.Entity<Consultation>(entity =>
         {

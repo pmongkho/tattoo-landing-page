@@ -3,13 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../core/api.service';
 import { RouterLink } from '@angular/router';
-import { MediaSettingsService } from '../core/media-settings.service';
-
-type PortfolioItem = {
-  imageUrl: string;
-  title: string;
-  caption: string;
-};
+import { MediaSettingsService, PortfolioItem } from '../core/media-settings.service';
 
 @Component({
 	standalone: true,
@@ -52,6 +46,11 @@ export class LandingPageComponent {
 				? settings.portfolio
 				: this.portfolio
 		}
+
+        this.api.getPortfolio().subscribe({
+            next: response => { if (response.enabled) this.portfolio = response.items; },
+            error: () => { /* Preserve local fallback when the API is unavailable. */ }
+        });
 
 		this.form = this.fb.group({
 			name: [

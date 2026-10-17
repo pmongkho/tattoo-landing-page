@@ -133,3 +133,7 @@ You can also set `DATABASE_URL` instead; the EF design-time factory supports bot
 - `appsettings.json` keeps an empty placeholder for `DefaultConnection`.
 - Public registration endpoint is not exposed.
 - Only users already in the `Admin` role can log in successfully.
+
+## Instagram portfolio gallery
+
+See [Instagram gallery setup](docs/instagram-gallery.md) for backend token configuration, syncing, and website visibility/pinning controls.

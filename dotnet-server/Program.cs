@@ -36,6 +36,15 @@ builder.Services.AddHttpClient<ISquareCustomerClient, SquareCustomerClient>((sp,
 builder.Services.AddScoped<ISquareDepositService, SquareDepositService>();
 builder.Services.AddHostedService<SquareDepositBackgroundService>();
 
+builder.Services.Configure<InstagramOptions>(builder.Configuration.GetSection("Instagram"));
+builder.Services.AddHttpClient<InstagramClient>(client =>
+{
+    client.BaseAddress = new Uri("https://graph.instagram.com/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+builder.Services.AddScoped<InstagramSyncService>();
+builder.Services.AddHostedService<InstagramSyncWorker>();
+
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
