@@ -17,5 +17,14 @@ export class AuthService {
 
   getToken(): string | null { return localStorage.getItem(this.tokenKey); }
   logout(): void { localStorage.removeItem(this.tokenKey); }
-  isAuthenticated(): boolean { return !!this.getToken(); }
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+      if (typeof payload.exp === 'number' && payload.exp * 1000 > Date.now()) return true;
+    } catch { /* Clear malformed or obsolete saved tokens. */ }
+    this.logout();
+    return false;
+  }
 }

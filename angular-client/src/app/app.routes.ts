@@ -13,6 +13,5 @@ export const appRoutes: Routes = [
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [adminGuard] },
   { path: 'admin/consultations', component: AdminConsultationsComponent, canActivate: [adminGuard] },
-  // Media management authenticates each server request with its separate media admin key.
-  { path: 'admin/media', component: AdminMediaManagerComponent }
+  { path: 'admin/media', component: AdminMediaManagerComponent, canActivate: [adminGuard] }
 ];

@@ -10,7 +10,6 @@ import { MediaSettings, MediaSettingsService, PortfolioItem } from '../core/medi
   templateUrl: './admin-media-manager.component.html'
 })
 export class AdminMediaManagerComponent {
-  instagramKey = '';
   instagramItems: InstagramAdminItem[] = [];
   instagramMessage = '';
   instagramBusy = false;
@@ -19,7 +18,7 @@ export class AdminMediaManagerComponent {
   loadInstagram(): void {
     this.instagramBusy = true;
     this.instagramMessage = '';
-    this.api.getInstagramMedia(this.instagramKey).subscribe({
+    this.api.getInstagramMedia().subscribe({
       next: result => {
         this.instagramItems = result.items.filter(item => item.isReel);
         this.instagramConfigured = result.configured;
@@ -32,7 +31,7 @@ export class AdminMediaManagerComponent {
 
   syncInstagram(): void {
     this.instagramBusy = true;
-    this.api.syncInstagram(this.instagramKey).subscribe({
+    this.api.syncInstagram().subscribe({
       next: () => this.loadInstagram(),
       error: error => this.instagramError(error)
     });
@@ -40,7 +39,7 @@ export class AdminMediaManagerComponent {
 
   saveInstagram(item: InstagramAdminItem): void {
     this.instagramBusy = true;
-    this.api.updateInstagramMedia(this.instagramKey, item).subscribe({
+    this.api.updateInstagramMedia(item).subscribe({
       next: () => { this.instagramBusy = false; this.instagramMessage = 'Saved for all visitors. Refresh the gallery to see changes.'; },
       error: error => this.instagramError(error)
     });
@@ -49,7 +48,7 @@ export class AdminMediaManagerComponent {
   private instagramError(error: { status: number; error?: { detail?: string } }): void {
     this.instagramBusy = false;
     this.instagramMessage = error.status === 401
-      ? 'Enter your media admin key. It must match Instagram__AdminKey on the backend (at least 32 characters).'
+      ? 'Your session expired. Log in again.'
       : error.error?.detail || 'Request failed. Check the backend connection and database migrations.';
   }
 
@@ -67,6 +66,7 @@ export class AdminMediaManagerComponent {
       avatarImageUrl: '',
       portfolio: []
     };
+    this.loadInstagram();
   }
 
   onFileSelected(event: Event): void {

@@ -11,7 +11,7 @@ The Angular UI lives in `angular-client/`.
   - Public consultation submission endpoint.
   - Public tattoo deals endpoints.
   - Admin consultations/tattoo-deals management endpoints.
-  - Development-only admin seed flow using environment variables.
+  - Opt-in first-admin bootstrap using environment variables (development or production).
 
 ## Folder structure (backend)
 
@@ -39,7 +39,8 @@ export JWT__Audience="tattoo-frontend"
 export JWT__AccessTokenMinutes="120"
 export FRONTEND_ORIGIN="http://localhost:4200"
 export ADMIN_EMAIL="admin@example.com"
-export ADMIN_PASSWORD="ChangeMe123!"
+export ADMIN_PASSWORD="<your-unique-12+-character-admin-password>"
+export AdminBootstrap__Enabled="true"
 
 dotnet ef database update
 dotnet run
@@ -61,6 +62,10 @@ npm start
 ```
 
 Default dev API base URL is configured in `src/environments/environment.ts`.
+
+## Admin login
+
+See [Admin Identity setup](docs/admin-authentication.md) to create the Identity tables and first admin account. Real credentials belong in backend environment settings.
 
 ## Environment variables
 
@@ -96,12 +101,12 @@ No connection string is committed to appsettings files.
 - `JWT__AccessTokenMinutes`
 - `FRONTEND_ORIGIN` (Vercel frontend origin)
 
-### Backend optional (development admin seeding only)
+### Backend first-admin bootstrap (explicit opt-in)
 
 - `ADMIN_EMAIL`
 - `ADMIN_PASSWORD`
 
-> Admin seeding runs in development only and creates/assigns the `Admin` role.
+> Set `AdminBootstrap__Enabled=true` to create a new admin from these variables. Set `Database__ApplyMigrations=true` to apply pending migrations at startup. Disable bootstrap and remove the bootstrap password after creation. See [Admin Identity setup](docs/admin-authentication.md) for the complete deployment steps.
 
 ### Frontend (Vercel)
 

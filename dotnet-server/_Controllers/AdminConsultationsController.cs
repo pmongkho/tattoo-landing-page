@@ -2,10 +2,12 @@ using dotnet_server._Data;
 using dotnet_server._Dtos;
 using dotnet_server._Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_server._Controllers;
 
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/admin/consultations")]
 public class AdminConsultationsController(AppDbContext dbContext) : ControllerBase

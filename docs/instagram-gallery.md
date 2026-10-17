@@ -13,22 +13,19 @@ In your **backend host's environment settings** (for example Render → your API
 | Name | Value |
 | --- | --- |
 | `Instagram__AccessToken` | Paste your long-lived Instagram User access token here |
-| `Instagram__AdminKey` | A separate random password of at least 32 characters for website gallery management |
 | `Instagram__ApiVersion` | `v22.0` (change to a supported Meta version when upgrading) |
 | `Instagram__SyncMinutes` | `30` (optional; minimum 5) |
 
-Generate the management key with a password manager. **Do not paste your Instagram token into Angular, the media manager, Git, or chat.** Empty placeholders in `dotnet-server/appsettings.json` document configuration only; put real credentials in your host's secret/environment settings. Use HTTPS for deployed frontend and API traffic. The management key protects only the new gallery endpoints; it does not secure the repository's existing unrelated admin endpoints.
+Set up your admin login using [Admin Identity setup](admin-authentication.md). **Do not paste your Instagram token into Angular, the media manager, Git, or chat.** Empty placeholders in `dotnet-server/appsettings.json` document configuration only; put real credentials in your host's secret/environment settings. Use HTTPS for deployed frontend and API traffic. Management requires an authenticated Identity administrator.
 
 For a local Bash session, enter the values without placing them in shell history:
 
 ```bash
 read -rsp 'Instagram access token: ' Instagram__AccessToken; echo
 export Instagram__AccessToken
-read -rsp 'Media admin key (32+ characters): ' Instagram__AdminKey; echo
-export Instagram__AdminKey
 ```
 
-Run the backend from that same session, or restart/redeploy it after updating your host's environment settings. Environment variable configuration overrides the empty JSON placeholders. On this cloud machine, first source `/workspace/.setup-tools/env.sh`, then enter the two variables above. Restart only the API process you own so it inherits the new values.
+Run the backend from that same session, or restart/redeploy it after updating your host's environment settings. Environment variable configuration overrides the empty JSON placeholders. On this cloud machine, first source `/workspace/.setup-tools/env.sh`, then enter the token above. Restart only the API process you own so it inherits the new values.
 
 ## Apply the database migration
 
@@ -48,8 +45,8 @@ dotnet ef database update --project dotnet-server --no-build --msbuildprojectext
 
 ## Choose visible Reels
 
-1. Open your website's `/admin/media` page.
-2. Under **Instagram Gallery**, enter `Instagram__AdminKey` in **Media admin key**. This key stays in component memory; it is not saved to browser storage.
+1. Log in at `/admin/login` with your Identity admin email and password.
+2. Open your website's `/admin/media` page. The previous separate media admin key is no longer needed.
 3. Click **Sync Instagram now**, then use **Visible**, and click **Save post** for each edited Reel.
 4. Refresh the landing page. Changes are stored in PostgreSQL and shared by all visitors.
 
@@ -62,5 +59,5 @@ New posts default to visible. After deploying the Reel-classification migration,
 - Saved posts are retained if upstream requests fail. They are not automatically removed when deleted from Instagram or when they fall outside the fetched window: hide them in the dashboard. Cached remote media can still fail if its URL expires before the next successful sync.
 - The homepage shows a loading state, an empty state, or an error state with a link to Instagram when appropriate. It does not substitute hardcoded photos.
 - Allow backend HTTPS access to `graph.instagram.com`; viewers' browsers also need access to Instagram's media CDN. Google Fonts networking is separate.
-- `GET /api/portfolio/reels` is public and returns at most 10 visible Reels, ordered by publication date descending. The older `GET /api/portfolio` remains available for compatibility. Management reads, updates, and sync require `X-Media-Admin-Key`. Tokens and the management key are never returned by these endpoints.
+- `GET /api/portfolio/reels` is public and returns at most 10 visible Reels, ordered by publication date descending. The older `GET /api/portfolio` remains available for compatibility. Management reads, updates, and sync require a bearer JWT for an Identity user in the `Admin` role. Instagram tokens are never returned by these endpoints.
 - This setup does not replace the hero video or avatar automatically.

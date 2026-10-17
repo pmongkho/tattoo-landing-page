@@ -3,9 +3,11 @@ using dotnet_server._Integrations;
 using dotnet_server._Models;
 using dotnet_server._Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_server._Controllers;
 
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/quo-messaging")]
 public class QuoMessagingController(IQuoLeadMessagingClient quoLeadMessagingClient) : ControllerBase

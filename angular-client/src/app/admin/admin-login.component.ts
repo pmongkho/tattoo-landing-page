@@ -10,13 +10,21 @@ import { CommonModule } from '@angular/common';
   templateUrl: './admin-login.component.html'
 })
 export class AdminLoginComponent {
-  error = false;
+  errorMessage = '';
+  submitting = false;
   form!: ReturnType<FormBuilder['group']>;
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.form = this.fb.group({ email: ['', [Validators.required, Validators.email]], password: ['', [Validators.required]] });
   }
   login(): void {
-    if (this.form.invalid) return;
-    this.auth.login(this.form.value.email!, this.form.value.password!).subscribe({ next: () => this.router.navigateByUrl('/admin/dashboard'), error: () => this.error = true });
+    if (this.form.invalid || this.submitting) return;
+    this.errorMessage = '';
+    this.submitting = true;
+    this.auth.login(this.form.value.email!, this.form.value.password!).subscribe({ next: () => this.router.navigateByUrl('/admin/dashboard'), error: error => {
+      this.submitting = false;
+      this.errorMessage = error.status === 401 ? 'Invalid email or password, or the account is temporarily locked.'
+        : error.status === 503 ? 'Admin login is not configured. Check the backend environment settings.'
+        : 'Unable to sign in. Check the backend connection and database setup.';
+    } });
   }
 }

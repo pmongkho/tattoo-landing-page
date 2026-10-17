@@ -12,16 +12,16 @@ export class ApiService {
 
   getInstagramReels() { return this.http.get<PortfolioItem[]>(`${this.api}/portfolio/reels`); }
   getPortfolio() { return this.http.get<{ enabled: boolean; items: PortfolioItem[] }>(`${this.api}/portfolio`); }
-  getInstagramMedia(key: string) {
-    return this.http.get<{ configured: boolean; items: InstagramAdminItem[] }>(`${this.api}/portfolio/manage`, { headers: { 'X-Media-Admin-Key': key } });
+  getInstagramMedia() {
+    return this.http.get<{ configured: boolean; items: InstagramAdminItem[] }>(`${this.api}/portfolio/manage`);
   }
-  syncInstagram(key: string) {
-    return this.http.post<{ synced: number }>(`${this.api}/portfolio/sync`, {}, { headers: { 'X-Media-Admin-Key': key } });
+  syncInstagram() {
+    return this.http.post<{ synced: number }>(`${this.api}/portfolio/sync`, {});
   }
-  updateInstagramMedia(key: string, item: InstagramAdminItem) {
+  updateInstagramMedia(item: InstagramAdminItem) {
     return this.http.patch(`${this.api}/portfolio/manage/${encodeURIComponent(item.id)}`, {
       visible: item.visible, pinned: item.pinned, displayOrder: item.displayOrder
-    }, { headers: { 'X-Media-Admin-Key': key } });
+    });
   }
 
   getTattooDeals() { return this.http.get<TattooDeal[]>(`${this.api}/tattoo-deals`); }

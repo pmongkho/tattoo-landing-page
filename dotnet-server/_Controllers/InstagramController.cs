@@ -1,9 +1,8 @@
-using System.Security.Cryptography;
-using System.Text;
 using dotnet_server._Data;
 using dotnet_server._Integrations;
 using dotnet_server._Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -37,18 +36,18 @@ public class InstagramController(AppDbContext db, IOptions<InstagramOptions> opt
         return Ok(items);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("manage")]
     public async Task<IActionResult> Manage(CancellationToken ct)
     {
-        if (!Authorized()) return Unauthorized();
         return Ok(new { configured = !string.IsNullOrWhiteSpace(options.Value.AccessToken), items = await db.InstagramMedia.AsNoTracking()
             .OrderByDescending(x => x.Pinned).ThenBy(x => x.DisplayOrder).ThenByDescending(x => x.PublishedAt).ThenBy(x => x.Id).ToListAsync(ct) });
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPatch("manage/{id}")]
     public async Task<IActionResult> Update(string id, GallerySettings settings, CancellationToken ct)
     {
-        if (!Authorized()) return Unauthorized();
         var item = await db.InstagramMedia.FindAsync([id], ct);
         if (item is null) return NotFound();
         item.Visible = settings.Visible;
@@ -58,10 +57,10 @@ public class InstagramController(AppDbContext db, IOptions<InstagramOptions> opt
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("sync")]
     public async Task<IActionResult> Sync(CancellationToken ct)
     {
-        if (!Authorized()) return Unauthorized();
         if (string.IsNullOrWhiteSpace(options.Value.AccessToken))
             return Problem("Set Instagram__AccessToken on the backend, then restart it.", statusCode: 503);
         try { return Ok(new { synced = await sync.SyncAsync(ct) }); }
@@ -69,12 +68,5 @@ public class InstagramController(AppDbContext db, IOptions<InstagramOptions> opt
         catch { return Problem("Instagram sync failed. Check the server token, permissions, API version and network access. Your saved gallery is unchanged.", statusCode: 502); }
     }
 
-    private bool Authorized()
-    {
-        var expected = options.Value.AdminKey;
-        var supplied = Request.Headers["X-Media-Admin-Key"].ToString();
-        return expected.Length >= 32 && supplied.Length > 0 && CryptographicOperations.FixedTimeEquals(
-            SHA256.HashData(Encoding.UTF8.GetBytes(expected)), SHA256.HashData(Encoding.UTF8.GetBytes(supplied)));
-    }
     public record GallerySettings(bool Visible, bool Pinned, int DisplayOrder);
 }

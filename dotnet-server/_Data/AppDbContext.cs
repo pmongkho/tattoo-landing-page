@@ -1,11 +1,13 @@
 using dotnet_server._Models;
 using dotnet_server._Models.Square;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace dotnet_server._Data;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<IdentityUser>(options)
 {
     public DbSet<Consultation> Consultations => Set<Consultation>();
     public DbSet<BookingDeposit> BookingDeposits => Set<BookingDeposit>();

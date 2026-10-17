@@ -8,7 +8,6 @@ namespace dotnet_server._Integrations;
 public class InstagramOptions
 {
     public string AccessToken { get; set; } = "";
-    public string AdminKey { get; set; } = "";
     public string ApiVersion { get; set; } = "v22.0";
     public int SyncMinutes { get; set; } = 30;
 }

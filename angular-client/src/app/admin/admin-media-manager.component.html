@@ -4,13 +4,9 @@
       <section class="bg-zinc-900 p-4 rounded space-y-4">
         <h2 class="text-xl">Instagram Reels</h2>
         <p class="text-sm">Your 10 newest visible Reels appear on the homepage, newest first. Photos and carousel videos are excluded.</p>
-        <label class="block">Media admin key
-          <input type="password" [(ngModel)]="instagramKey" autocomplete="off" placeholder="Your media admin key"
-            class="block w-full p-2 bg-black border border-zinc-700" />
-        </label>
-        <p class="text-sm">This is your website management key, not your Instagram access token. The Instagram token belongs in the backend environment settings.</p>
-        <button (click)="loadInstagram()" [disabled]="!instagramKey || instagramBusy" class="px-4 py-2 bg-white text-black rounded">Load gallery</button>
-        <button (click)="syncInstagram()" [disabled]="!instagramKey || instagramBusy" class="ml-2 px-4 py-2 border rounded">Sync Instagram now</button>
+        <p class="text-sm">You are signed in as an administrator. Keep the Instagram access token in backend environment settings.</p>
+        <button (click)="loadInstagram()" [disabled]="instagramBusy" class="px-4 py-2 bg-white text-black rounded">Load gallery</button>
+        <button (click)="syncInstagram()" [disabled]="instagramBusy" class="ml-2 px-4 py-2 border rounded">Sync Instagram now</button>
         <p role="status">{{ instagramBusy ? 'Working…' : instagramMessage }}</p>
         <div *ngFor="let item of instagramItems" class="border border-zinc-700 p-3 space-y-2">
           <img *ngIf="item.thumbnailUrl || item.mediaType !== 'VIDEO'" [src]="item.thumbnailUrl || item.mediaUrl" [alt]="item.caption || 'Instagram media'" class="h-32 w-32 object-cover" loading="lazy" />

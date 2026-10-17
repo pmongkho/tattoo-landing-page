@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../core/auth.service';
 import { ApiService } from '../core/api.service';
 
 @Component({
@@ -10,7 +11,8 @@ import { ApiService } from '../core/api.service';
 })
 export class AdminDashboardComponent implements OnInit {
   totalLeads = 0; newLeads = 0; availableDeals = 0; bookedDeals = 0;
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private auth: AuthService, private router: Router) {}
+  logout(): void { this.auth.logout(); void this.router.navigateByUrl('/admin/login'); }
   ngOnInit(): void {
     this.api.getAdminConsultations().subscribe(cs => { this.totalLeads = cs.length; this.newLeads = cs.filter(x => x.status === 'New').length; });
     this.api.getAdminTattooDeals().subscribe(ds => { this.availableDeals = ds.filter(x => x.isAvailable).length; this.bookedDeals = ds.filter(x => !x.isAvailable).length; });
